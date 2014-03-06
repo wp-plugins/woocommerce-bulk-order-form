@@ -1,4 +1,4 @@
-=== WooCommerce Bulk Order Form ===
+=== WooCommerce Quick/Bulk Order Form ===
 Contributors: jprummer
 Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
@@ -6,15 +6,11 @@ Requires at least: 3.4
 Tested up to: 3.8.1
 Stable tag: 1.0.1
 
-Automatically add a bulk order form to your WooCommerce site with a single shortcode.
+Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
 == Description ==
 
-This plugin adds a bulk order form to any page or post with the [wcbulkorder] shortcode.
-
-Offer bulk purchasing & help your customers buy more.
-
-This plugin helps you sell more by letting you add a WooCommerce bulk order form to your website in seconds via the [wcbulkorder] shortcode. The shortcode is extremely customizable and includes the following awesome features:
+This plugin helps you sell more by letting you add a WooCommerce bulk/quick order form to your website in seconds via the [wcbulkorder] shortcode. The shortcode is extremely customizable and includes the following awesome features:
 
 * Let user search by product id, title, or sku
 * Turn price fields on/off

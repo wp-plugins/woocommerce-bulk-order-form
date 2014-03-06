@@ -209,7 +209,7 @@ class WCBulkOrderForm_Settings {
 		$default = array(
 			'search_by'				=> '4',
 			'search_format'			=> '1',
-			'new_row_button'		=> 'true',
+			'new_row_button'		=> 'false',
 			'bulkorder_row_number'	=> '5',
 			'display_price'			=> 'true',
 			'product_field_title'	=> 'Product',

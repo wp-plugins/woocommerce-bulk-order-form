@@ -1,7 +1,7 @@
 <?php
 
 /*
-  Plugin Name: WooCommerce Bulk Order Form Free
+  Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
   Version: 1.0.1
@@ -107,7 +107,7 @@ class WCBulkOrderForm {
 		}
 		extract( shortcode_atts( array(
 		'rows' => $this->options['bulkorder_row_number'],
-		'price' => 'true',
+		'price' => $this->options['display_price'],
 		'price_label' => $this->options['price_field_title'],
 		'product_label' => $this->options['product_field_title'],
 		'quantity_label' => $this->options['quantity_field_title'],
