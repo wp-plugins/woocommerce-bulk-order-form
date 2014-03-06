@@ -1,0 +1,6 @@
+p.bulkorder-message {
+	color: green;
+}
+p.bulkorder-message.fail {
+	color: red;
+}
