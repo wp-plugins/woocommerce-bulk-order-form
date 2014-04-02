@@ -9,7 +9,7 @@ jQuery(document).ready(function ($){
 	function autocomplete() {
 		$("input.wcbulkorderproduct").autocomplete({
 			source: function(req, response){
-				$.getJSON(WCBulkOrder.url+'?callback=?&action='+acs_action, req, response);
+				$.getJSON(WCBulkOrder.url+'?callback=?&action='+acs_action+'&_wpnonce='+WCBulkOrder.search_products_nonce, req, response);
 			},
 			select: function(event, ui) {
 				

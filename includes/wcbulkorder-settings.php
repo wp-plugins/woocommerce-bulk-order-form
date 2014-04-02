@@ -42,6 +42,7 @@ class WCBulkOrderForm_Settings {
 					'4'			=> __( 'All' , 'wcbulkorderform' )
 				),
 				'disabled'		=> true,
+				'default'		=> '4'
 			)
 		);
 		
@@ -62,6 +63,7 @@ class WCBulkOrderForm_Settings {
 					'5'			=> __( 'Title' , 'wcbulkorderform' )
 				),
 				'disabled'		=> true,
+				'default'		=> '1'
 			)
 		);
 		
@@ -79,6 +81,7 @@ class WCBulkOrderForm_Settings {
 					'false'		=> __( 'No' , 'wcbulkorderform' )
 				),
 				'disabled'		=> true,
+				'default'		=> 'false'
 			)
 		);
 		
@@ -153,9 +156,27 @@ class WCBulkOrderForm_Settings {
 				'id'			=> 'price_field_title'
 			)
 		);
+
+		add_settings_field(
+			'no_load_css',
+			__( "Don't load jquery ui styles. (Don't check this unless you know your site is loading jquery ui styles from another source)", 'wcbulkorderform' ),
+			array( &$this, 'checkbox_element_callback' ),
+			$option,
+			'plugin_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'no_load_css',
+			)
+		);
 		
 		// Register settings.
 		register_setting( $option, $option, array( &$this, 'wcbulkorderform_options_validate' ) );
+
+		// Register defaults if settings empty (might not work in case there's only checkboxes and they're all disabled)
+		$option_values = get_option($option);
+		if ( empty( $option_values ) ) {
+			$this->default_settings();
+		}
 	}
 
 	/**
@@ -214,7 +235,8 @@ class WCBulkOrderForm_Settings {
 			'display_price'			=> 'true',
 			'product_field_title'	=> 'Product',
 			'quantity_field_title'	=> 'Quantity',
-			'price_field_title'		=> 'Price'
+			'price_field_title'		=> 'Price',
+			'no_load_css'			=> ''
 		);
 		
 		update_option( 'wcbulkorderform', $default );
@@ -434,7 +456,7 @@ class WCBulkOrderForm_Settings {
 		}
 
 		if (isset( $args['disabled'] )) {
-			$html .= ' <span style="display:none;" class="pro-feature"><i>'. __('This feature only available in', 'wcbulkorderform') .' <a href="https://wpovernight.com/downloads/menu-cart-pro?utm_source=wordpress&utm_medium=menucartfree&utm_campaign=menucartflyout">Menu Cart Pro</a></i></span>';
+			$html .= ' <span style="display:none;" class="pro-feature"><i>'. __('This feature only available in', 'wcbulkorderform') .' <a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/?utm_source=wordpress&utm_medium=wcbulkorderformfree&utm_campaign=bulkorderformfree">Bulk Order Form Pro</a></i></span>';
 			$html .= '<div style="position:absolute; left:0; right:0; top:0; bottom:0; background-color:white; -moz-opacity: 0; opacity:0;filter: alpha(opacity=0);" class="hidden-input"></div>';
 			$html = '<div style="display:inline-block; position:relative;">'.$html.'</div>';
 		}

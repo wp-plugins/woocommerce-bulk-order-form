@@ -4,7 +4,7 @@ Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
 Requires at least: 3.4
 Tested up to: 3.8.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 
 Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
@@ -19,6 +19,7 @@ This plugin helps you sell more by letting you add a WooCommerce bulk/quick orde
 * Set title for quantity input field column
 * Set title for price input field column
 * Price totals are calculated in real time
+* Disable jquery ui css or add your own
 
 
 There's also a pro version found at [WP Overnight](https://wpovernight.com/downloads/woocommerce-bulk-order-form/). Why? The funds generated help to ensure long term support of this plugin. It's like a donation but better. :)
@@ -50,11 +51,27 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 
 == Changelog ==
 
+= 1.0.2 =
+
+* Fixed issue with search
+* Added option to remove css
+* Scripts are only loaded on pages that have the bulk order form
+* General code improvement
+* CSS now loaded from within plugin
+
 = 1.0.1 =
 
 Initial Release
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+
+* Fixed issue with search
+* Added option to remove css
+* Scripts are only loaded on pages that have the bulk order form
+* General code improvement
+* CSS now loaded from within plugin
 
 = 1.0.1 =
 

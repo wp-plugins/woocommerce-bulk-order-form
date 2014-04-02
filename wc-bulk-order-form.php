@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.1
+  Version: 1.0.2
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -25,11 +25,11 @@
 
 class WCBulkOrderForm {
 
+	private static $add_script;
 	/**
 	 * Construct.
 	 */
 	public function __construct() {
-
 		$this->includes();
 		$this->options = get_option('wcbulkorderform');
 		if(empty($this->options)) {
@@ -41,10 +41,15 @@ class WCBulkOrderForm {
 		add_shortcode('wcbulkorder', array( &$this, 'wc_bulk_order_form' ) );
 		
 		// Functions to deal with the AJAX request - one for logged in users, the other for non-logged in users.
+		
 		add_action( 'wp_ajax_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));
 		add_action( 'wp_ajax_nopriv_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));	
-		add_action('wp_enqueue_scripts', array( &$this, 'load_jquery' ), 0 );
+		//add_action('wp_enqueue_scripts', array( &$this, 'load_jquery' ), 0 );
 		add_action('wp_print_styles', array( &$this, 'load_styles' ), 0 );
+
+		add_action('init', array( &$this, 'register_script'));
+		add_action('wp_footer', array( &$this, 'print_script'));
+		
 	}
 	
 	/**
@@ -58,8 +63,15 @@ class WCBulkOrderForm {
 	 * Load CSS
 	 */
 	public function load_styles() {
-		wp_register_style('wcbulkorder-jquery-ui','http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css');
-		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
+		
+		if (empty($this->options['no_load_css'])) {
+			$autocomplete = file_exists( get_stylesheet_directory() . '/jquery-ui.css' )
+			? get_stylesheet_directory_uri() . '/jquery-ui.css'
+			: plugins_url( '/css/jquery-ui.css', __FILE__ );
+
+			wp_register_style( 'wcbulkorder-jquery-ui', $autocomplete, array(), '', 'all' );
+			wp_enqueue_style( 'wcbulkorder-jquery-ui' );
+		}
 		
 		$css = file_exists( get_stylesheet_directory() . '/wcbulkorderform.css' )
 			? get_stylesheet_directory_uri() . '/wcbulkorderform.css'
@@ -73,8 +85,23 @@ class WCBulkOrderForm {
 	 * Load JS
 	 */   
 	public function load_jquery() {
-		wp_enqueue_script( 'wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,false);
+		wp_enqueue_script( 'wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
 		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products')));
+	}
+
+	/**
+	 * Load JS
+	 */   
+	static function register_script() {
+		wp_register_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
+		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products')));
+	}
+
+	static function print_script() {
+		if ( ! self::$add_script )
+			return;
+
+		wp_print_scripts('wcbulkorder_acsearch');
 	}
 	
 	/**
@@ -82,6 +109,7 @@ class WCBulkOrderForm {
 	 * Source: http://wordpress.stackexchange.com/questions/53280/woocommerce-add-a-product-to-cart-programmatically-via-js-or-php
 	*/ 
 	public function wc_bulk_order_form ($atts){
+		self::$add_script = true;
 		$prod_name = '';
 		if(isset($_POST['submit'])) {
 			$prod_name = $_POST['wcbulkorderproduct'];
@@ -115,13 +143,14 @@ class WCBulkOrderForm {
 		), $atts ) );
 		$i = 0;
 		$html = '';
-
-		if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)) {
-			echo "<p class='bulkorder-message'>Success! Your products have been added to your shopping cart.</p>";
-		} else if($_POST['wcbulkorderid'][0] > 0){
-			echo "<p class='bulkorder-message'>Success! Your product has been added to your shopping cart.</p>";
-		} else if((isset($_POST['submit'])) && ($_POST['wcbulkorderid'][0] <= 0)) {
-			echo "<p class='bulkorder-message fail'>Invalid submission - please try again.</p>";
+		if (isset($_POST['wcbulkorderid'])) {
+			if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)) {
+				echo "<p class='bulkorder-message'>Success! Your products have been added to your shopping cart.</p>";
+			} else if($_POST['wcbulkorderid'][0] > 0){
+				echo "<p class='bulkorder-message'>Success! Your product has been added to your shopping cart.</p>";
+			} else if((isset($_POST['submit'])) && ($_POST['wcbulkorderid'][0] <= 0)) {
+				echo "<p class='bulkorder-message fail'>Invalid submission - please try again.</p>";
+			}
 		}
 
 		?>
@@ -192,10 +221,11 @@ class WCBulkOrderForm {
 		// Query for suggestions
 
 		$term = $_REQUEST['term'];
+		$search_by = isset($this->options['search_by']) ? $this->options['search_by'] : '4';
 		if (empty($term)) die();
 		if ( is_numeric( $term ) ) {
 		
-			if (($this->options['search_by'] == 2) || ($this->options['search_by'] == 4)){
+			if (($search_by == 2) || ($search_by == 4)){
 				$products1 = array(
 					'post_type'                        => array ('product', 'product_variation'),
 					'post_status'                 => 'publish',
@@ -212,7 +242,7 @@ class WCBulkOrderForm {
 					'fields'                        => 'ids'
 				);
 			}
-			if (($this->options['search_by'] == 1) || ($this->options['search_by'] == 4)){
+			if (($search_by == 1) || ($search_by == 4)){
 				$products3 = array(
 					'post_type'                        => array ('product', 'product_variation'),
 					'post_status'                 => 'publish',
@@ -227,16 +257,16 @@ class WCBulkOrderForm {
 					'fields'                        => 'ids'
 				);
 			}
-			if($this->options['search_by'] == 1) {
+			if($search_by == 1) {
 				$products = array_unique(array_merge(get_posts( $products3 ) ));
-			} elseif ($this->options['search_by'] == 2){
+			} elseif ($search_by == 2){
 				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
 			} else {
 				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ) ));
 			}
 		} else {
 		
-			if (($this->options['search_by'] == 1) || ($this->options['search_by'] == 4)){
+			if (($search_by == 1) || ($search_by == 4)){
 				$products1 = array(
 						'post_type'                        => array ('product', 'product_variation'),
 						'post_status'                 => 'publish',
@@ -251,7 +281,7 @@ class WCBulkOrderForm {
 						'fields'                        => 'ids'
 					);
 			}
-			if (($this->options['search_by'] == 3) || ($this->options['search_by'] == 4)){
+			if (($search_by == 3) || ($search_by == 4)){
 				$products2 = array(
 					'post_type' 			=> array ('product', 'product_variation'),
 					'post_status'         	=> 'publish',
@@ -262,9 +292,9 @@ class WCBulkOrderForm {
 			}
 		
 		}
-			if($this->options['search_by'] == 1) {
+			if($search_by == 1) {
 				$products = array_unique(array_merge(get_posts( $products1 ) ));
-			} elseif($this->options['search_by'] == 3) {
+			} elseif($search_by == 3) {
 				$products = array_unique(array_merge(get_posts( $products2 ) ));
 			} else {
 				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
@@ -281,6 +311,7 @@ class WCBulkOrderForm {
 			$post_type = get_post_type($prod);
 
 			if ( 'product' == $post_type ) {
+				//$_pf = new WC_Product();
 				$product = get_product($prod);
 				$id = $product->id;
 				$price = number_format((float)$product->get_price(), 2, '.', '');
@@ -302,8 +333,8 @@ class WCBulkOrderForm {
 			$symbol = get_woocommerce_currency_symbol();
 			// Initialise suggestion array
 			$suggestion = array();
-			if (isset($this->options['search_format'])) {
-				switch ($this->options['search_format']) {
+			$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
+				switch ($switch_data) {
 					case 1:
 						if (!empty($sku)) {
 							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
@@ -332,7 +363,6 @@ class WCBulkOrderForm {
 						$suggestion['label'] = html_entity_decode($title);
 						break;
 				}
-			}
 
 			$suggestion['price'] = $price;
 			$suggestion['symbol'] = $symbol;
@@ -346,7 +376,7 @@ class WCBulkOrderForm {
 		endforeach;
 
 		// JSON encode and echo
-		$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
+			$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
 		//print_r($response);
 		echo $response;
 
