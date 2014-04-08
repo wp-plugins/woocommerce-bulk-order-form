@@ -352,11 +352,7 @@ class WCBulkOrderForm {
 			$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
 				switch ($switch_data) {
 					case 1:
-						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
-						} else {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.$price);
-						}
+						$suggestion['label'] = html_entity_decode($title .' - '.$symbol.$price);
 						break;
 					case 2:
 						if (!empty($sku)) {
@@ -366,7 +362,11 @@ class WCBulkOrderForm {
 						}
 						break;
 					case 3:
-						$suggestion['label'] = html_entity_decode($title .' - '.$symbol.$price);
+						if (!empty($sku)) {
+							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
+						} else {
+							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.$price);
+						}
 						break;
 					case 4:
 						if (!empty($sku)) {
