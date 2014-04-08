@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.2
+  Version: 1.0.3
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -30,6 +30,7 @@ class WCBulkOrderForm {
 	 * Construct.
 	 */
 	public function __construct() {
+		
 		$this->includes();
 		$this->options = get_option('wcbulkorderform');
 		if(empty($this->options)) {
@@ -44,7 +45,6 @@ class WCBulkOrderForm {
 		
 		add_action( 'wp_ajax_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));
 		add_action( 'wp_ajax_nopriv_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));	
-		//add_action('wp_enqueue_scripts', array( &$this, 'load_jquery' ), 0 );
 		add_action('wp_print_styles', array( &$this, 'load_styles' ), 0 );
 
 		add_action('init', array( &$this, 'register_script'));
@@ -70,7 +70,7 @@ class WCBulkOrderForm {
 			: plugins_url( '/css/jquery-ui.css', __FILE__ );
 
 			wp_register_style( 'wcbulkorder-jquery-ui', $autocomplete, array(), '', 'all' );
-			wp_enqueue_style( 'wcbulkorder-jquery-ui' );
+			//wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		}
 		
 		$css = file_exists( get_stylesheet_directory() . '/wcbulkorderform.css' )
@@ -78,7 +78,7 @@ class WCBulkOrderForm {
 			: plugins_url( '/css/wcbulkorderform.css', __FILE__ );
 			
 		wp_register_style( 'wcbulkorderform', $css, array(), '', 'all' );
-		wp_enqueue_style( 'wcbulkorderform' );
+		//wp_enqueue_style( 'wcbulkorderform' );
 	}
 	
 	/**
@@ -102,6 +102,8 @@ class WCBulkOrderForm {
 			return;
 
 		wp_print_scripts('wcbulkorder_acsearch');
+		wp_enqueue_style( 'wcbulkorderform' );
+		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 	}
 	
 	/**
@@ -154,6 +156,7 @@ class WCBulkOrderForm {
 		}
 
 		?>
+
 		<form action="" method="post" id="BulkOrderForm">
 		<table class="wcbulkorderformtable">
 			<tbody class="wcbulkorderformtbody">
@@ -311,23 +314,36 @@ class WCBulkOrderForm {
 			$post_type = get_post_type($prod);
 
 			if ( 'product' == $post_type ) {
-				//$_pf = new WC_Product();
 				$product = get_product($prod);
 				$id = $product->id;
 				$price = number_format((float)$product->get_price(), 2, '.', '');
-				$sku = $product->get_sku();//get_post_meta( $id, '_sku');
+				$sku = $product->get_sku();
 				$title = get_the_title($product->id);
 			}
 			
 			elseif ( 'product_variation' == $post_type ) {
-				//$product = get_product($prod);
-				//$products = get_product($prod->ID);	
 				$product = new WC_Product_Variation($prod);
-				//print_r($product);
+				$parent = get_product($prod);
 				$id = $product->variation_id;
 				$price = number_format((float)$product->price, 2, '.', '');
 				$sku = $product->get_sku();
-				$title = get_the_title($id);
+				$title = $product->get_title();
+				$attributes = $product->get_variation_attributes();
+				foreach ( $attributes as $name => $value) {
+					$attr_name = $name;                       
+					$attr_value = $value;
+					$attr_value = str_replace('-', ' ', $value);
+					if (strstr($attr_name, 'pa_')){
+                        $atts = get_the_terms($parent->id ,$attr_name);
+                        print_r($atts);
+                        $attr_name_clean = wc_attribute_label($attr_name);
+                    }
+                    else {
+                        $np = explode("-",str_replace("attribute_","",$attr_name));
+                        $attr_name_clean = ucwords(implode(" ",$np));
+                    }
+					$title .= " - " . $attr_name_clean . ": " . $attr_value;
+                }
 			}
 			
 			$symbol = get_woocommerce_currency_symbol();
@@ -376,7 +392,7 @@ class WCBulkOrderForm {
 		endforeach;
 
 		// JSON encode and echo
-			$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
+		$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
 		//print_r($response);
 		echo $response;
 

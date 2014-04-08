@@ -84,6 +84,24 @@ class WCBulkOrderForm_Settings {
 				'default'		=> 'false'
 			)
 		);
+
+		add_settings_field(
+			'display_images',
+			__( 'Display product images in autocomplete search?', 'wcbulkorderform' ),
+			array( &$this, 'radio_element_callback' ),
+			$option,
+			'plugin_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'display_images',
+				'options' 		=> array(
+					'true'		=> __( 'Yes' , 'wcbulkorderform' ),
+					'false'		=> __( 'No' , 'wcbulkorderform' )
+				),
+				'disabled'		=> true,
+				'default'		=> 'false'
+			)
+		);
 		
 		// Section.
 		add_settings_section(
@@ -236,7 +254,8 @@ class WCBulkOrderForm_Settings {
 			'product_field_title'	=> 'Product',
 			'quantity_field_title'	=> 'Quantity',
 			'price_field_title'		=> 'Price',
-			'no_load_css'			=> ''
+			'no_load_css'			=> '',
+			'display_images'		=> 'false'
 		);
 		
 		update_option( 'wcbulkorderform', $default );
