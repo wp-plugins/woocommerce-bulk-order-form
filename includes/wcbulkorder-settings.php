@@ -307,7 +307,7 @@ class WCBulkOrderForm_Settings {
 				jQuery(this).closest('.hidden-input').hide();
 			});
 			jQuery( document ).ready(function( $ ) {
-			    $("input[id^=wcbulkorderform]:radio:lt(11)").attr('disabled',true);
+			    $("input[id^=wcbulkorderform]:radio:lt(13)").attr('disabled',true);
 			});
 		</script>
 		<?php
