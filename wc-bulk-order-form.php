@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.3
+  Version: 1.0.4
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -57,6 +57,7 @@ class WCBulkOrderForm {
 	 */
 	public function includes() {
 		include_once( 'includes/wcbulkorder-settings.php' );
+		include_once( 'includes/wc-bulk-order-form-compatibility.php' );
 	}
 	
 	/**
@@ -335,8 +336,7 @@ class WCBulkOrderForm {
 					$attr_value = str_replace('-', ' ', $value);
 					if (strstr($attr_name, 'pa_')){
                         $atts = get_the_terms($parent->id ,$attr_name);
-                        print_r($atts);
-                        $attr_name_clean = wc_attribute_label($attr_name);
+                   		$attr_name_clean = WC_Bulk_Order_Form_Compatibility::wc_attribute_label($attr_name);
                     }
                     else {
                         $np = explode("-",str_replace("attribute_","",$attr_name));
@@ -352,21 +352,21 @@ class WCBulkOrderForm {
 			$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
 				switch ($switch_data) {
 					case 1:
-						$suggestion['label'] = html_entity_decode($title .' - '.$symbol.$price);
+						if (!empty($sku)) {
+							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+						} else {
+							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+						}
 						break;
 					case 2:
 						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.$price.' - '.$sku);
+							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product).' - '.$sku);
 						} else {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.$price);
+							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
 						}
 						break;
 					case 3:
-						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
-						} else {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.$price);
-						}
+						$suggestion['label'] = html_entity_decode($title .' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
 						break;
 					case 4:
 						if (!empty($sku)) {
@@ -380,7 +380,7 @@ class WCBulkOrderForm {
 						break;
 				}
 
-			$suggestion['price'] = $price;
+			$suggestion['price'] = apply_filters('wc_bulk_order_form_price' , $price, $product);
 			$suggestion['symbol'] = $symbol;
 			$suggestion['id'] = $id;
 			if (!empty($variation_id)) {
