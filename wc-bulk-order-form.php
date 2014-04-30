@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.4
+  Version: 1.0.5
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -39,6 +39,7 @@ class WCBulkOrderForm {
 		}
 		$this->settings = new WCBulkOrderForm_Settings();
 		
+		add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 ); // or use init?
 		add_shortcode('wcbulkorder', array( &$this, 'wc_bulk_order_form' ) );
 		
 		// Functions to deal with the AJAX request - one for logged in users, the other for non-logged in users.
@@ -90,6 +91,14 @@ class WCBulkOrderForm {
 		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products')));
 	}
 
+
+	/**
+	 * Load translations.
+	 */
+	public function languages() {
+		load_plugin_textdomain( 'wcbulkorderform', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+	}
+
 	/**
 	 * Load JS
 	 */   
@@ -112,6 +121,8 @@ class WCBulkOrderForm {
 	 * Source: http://wordpress.stackexchange.com/questions/53280/woocommerce-add-a-product-to-cart-programmatically-via-js-or-php
 	*/ 
 	public function wc_bulk_order_form ($atts){
+
+		$html = '';
 		self::$add_script = true;
 		$prod_name = '';
 		if(isset($_POST['submit'])) {
@@ -145,33 +156,34 @@ class WCBulkOrderForm {
 		'add_rows' => 'false'
 		), $atts ) );
 		$i = 0;
-		$html = '';
+
 		if (isset($_POST['wcbulkorderid'])) {
 			if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)) {
-				echo "<p class='bulkorder-message'>Success! Your products have been added to your shopping cart.</p>";
+				echo '<p class="bulkorder-message">'.__( 'Success! Your products have been added to your shopping cart.', 'wcbulkorderform' ).'</p>';
 			} else if($_POST['wcbulkorderid'][0] > 0){
-				echo "<p class='bulkorder-message'>Success! Your product has been added to your shopping cart.</p>";
+				echo '<p class="bulkorder-message">'.__( 'Success! Your product has been added to your shopping cart.', 'wcbulkorderform' ).'</p>';
 			} else if((isset($_POST['submit'])) && ($_POST['wcbulkorderid'][0] <= 0)) {
-				echo "<p class='bulkorder-message fail'>Invalid submission - please try again.</p>";
+				echo '<p class="bulkorder-message fail">'.__( 'Invalid submission - please try again.', 'wcbulkorderform' ).'</p>';
 			}
 		}
 
-		?>
+		$html = <<<HTML
 
 		<form action="" method="post" id="BulkOrderForm">
 		<table class="wcbulkorderformtable">
 			<tbody class="wcbulkorderformtbody">
 				<tr>
-					<th style="width: 60%"><?php echo $product_label ?></th>
-					<th style="width: 20%"><?php echo $quantity_label ?></th>
-					<?php if ($price == 'true'){ ?>
-						<th style="width: 20%;text-align:center"><?php echo $price_label ?></th>
-					<?php } ?>	
-				</tr>
-			<?php		
+					<th style="width: 60%">$product_label</th>
+					<th style="width: 20%">$quantity_label</th>
+HTML;
+					if ($price == 'true'){
+						$html .= '<th style="width: 20%;text-align:center">'.$price_label.'</th>';
+					}
+				$html .= '</tr>';
+
 			while($i < $rows) {
 				++$i;
-			?>
+				$html .= <<<HTML2
 				<tr class="wcbulkorderformtr">
 					<td style="width: 60%">
 						<input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%" />
@@ -184,46 +196,57 @@ class WCBulkOrderForm {
 					<?php } ?>	
 					<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />
 				</tr>
-				
-			<?php } ?>
-				
+HTML2;
+			}
+		$html .= <<<HTML3
 			</tbody>
 		</table>	
 		<table class="wcbulkorderformtable">
 			<tbody>
-				<?php if ($price == 'true'){ ?>
+HTML3;
+				if ($price == 'true'){
+				$html .= <<<HTML4
 				<tr class="wcbulkorderformtr">
 					<td style="width: 60%">
 						
 					</td>
 					<td style="width: 20%">
-						Total Price:
+HTML4;
+						$html .= __( 'Total Price:' , 'wcbulkorderform' );
+					$html .= <<<HTML6
 					</td>
 					
 					<td style="width: 20%;text-align:center;color: green" class="wcbulkorderpricetotal"></td>
 					
 				</tr>
-				<?php } ?>	
-				<tr>
-					<td style="width: 60%"></td>
-					<td style="width: 20%"><?php if (($add_rows == 'true') && ($price == 'true')){ ?>
-						<button class="wcbulkordernewrowprice">Add Row</button>
-						<?php }
-						elseif (($add_rows == 'true') && ($price != 'true')) { ?>
-						<button class="wcbulkordernewrow">Add Row</button>
-						<?php } ?>
-					</td>
-					<td style="width: 20%"><input type="submit" value="Add To Cart" name="submit" /></td>
+HTML6;
+				}
+				$html .= '<tr>';
+					$html .= '<td style="width: 60%"></td>';
+					$html .='<td style="width: 20%">';
+						if (($add_rows == 'true') && ($price == 'true')){
+						$html .='<button class="wcbulkordernewrowprice">'.__( 'Add Row' , 'wcbulkorderform' ).'</button>';
+						}
+						elseif (($add_rows == 'true') && ($price != 'true')) {
+						$html .='<button class="wcbulkordernewrow">'.__( 'Add Row' , 'wcbulkorderform' ).'</button>';
+						}
+					
+					$html .='</td>';
+					$html .='<td style="width: 20%"><input type="submit" value="'.__( 'Add To Cart' , 'wcbulkorderform' ).'" name="submit" /></td>';
+					$html .= <<<HTML5
 				</tr>
 			</tbody>
 		</table>
 		</form>
-		<?php
+HTML5;
+		return $html;
+		
 	}
 
 	function myprefix_autocomplete_suggestions(){
 		// Query for suggestions
 
+		$term = '';
 		$term = $_REQUEST['term'];
 		$search_by = isset($this->options['search_by']) ? $this->options['search_by'] : '4';
 		if (empty($term)) die();
