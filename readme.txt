@@ -91,7 +91,7 @@ Initial Release
 
 = 1.0.6 =
 
-* Fix: Removed extra fields outputted when price field turned off
+* Fix: Removed extra fields displayed when price field turned off
 * Tweak: Added spinner so user knows the form is working
 
 = 1.0.5 =
