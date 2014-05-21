@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.5
+  Version: 1.0.6
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -186,17 +186,20 @@ HTML;
 				$html .= <<<HTML2
 				<tr class="wcbulkorderformtr">
 					<td style="width: 60%">
+						<i class="bulkorder_spinner fa fa-spinner fa-spin"></i>
 						<input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%" />
 					</td>
 					<td style="width: 20%">
 						<input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%" />
 					</td>
-					<?php if ($price == 'true'){ ?>
-					<td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td>
-					<?php } ?>	
+HTML2;
+					if($price == 'true'){
+					$html .= '<td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td>';
+					}
+					$html .= <<<HTML7
 					<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />
 				</tr>
-HTML2;
+HTML7;
 			}
 		$html .= <<<HTML3
 			</tbody>
