@@ -272,6 +272,15 @@ HTML5;
 					'fields'                        => 'ids'
 				);
 			}
+			if (($search_by == 3) || ($search_by == 4)){
+				$products4 = array(
+					'post_type' 			=> array ('product', 'product_variation'),
+					'post_status'         	=> 'publish',
+					'posts_per_page'         => -1,
+					's'                 	=> $term,
+					'fields'                        => 'ids'
+				);
+			}
 			if (($search_by == 1) || ($search_by == 4)){
 				$products3 = array(
 					'post_type'                        => array ('product', 'product_variation'),
@@ -291,8 +300,10 @@ HTML5;
 				$products = array_unique(array_merge(get_posts( $products3 ) ));
 			} elseif ($search_by == 2){
 				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+			} elseif ($search_by == 3){
+				$products = array_unique(array_merge(get_posts( $products4 ) ));
 			} else {
-				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ) ));
+				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ), get_posts( $products4 ) ));
 			}
 		} else {
 		
