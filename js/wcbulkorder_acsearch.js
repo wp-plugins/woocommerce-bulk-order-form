@@ -79,13 +79,13 @@ jQuery(document).ready(function ($){
 	$("input.wcbulkorderproduct").click(autocomplete);
 	$("button.wcbulkordernewrow").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
 		autocomplete();
 		return false;
 	});
 	$("button.wcbulkordernewrowprice").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
 		autocomplete();
 		return false;
 	});

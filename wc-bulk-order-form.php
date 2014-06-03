@@ -186,6 +186,7 @@ HTML;
 				$html .= <<<HTML2
 				<tr class="wcbulkorderformtr">
 					<td style="width: 60%">
+						<i class="bulkorder_spinner"></i>
 						<input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%" />
 					</td>
 					<td style="width: 20%">
