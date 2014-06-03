@@ -52,6 +52,12 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 
 == Changelog ==
 
+= 1.0.7 =
+
+* Fix: Duplicate Spinner Displayed in Font Awesome
+* Fix: Search By SKU Broken
+* Tweak: Search for numbered titles enababled
+
 = 1.0.6 =
 
 * Fix: Removed extra fields outputted when price field turned off
@@ -89,9 +95,15 @@ Initial Release
 
 == Upgrade Notice ==
 
+= 1.0.7 =
+
+* Fix: Duplicate Spinner Displayed in Font Awesome
+* Fix: Search By SKU Broken
+* Tweak: Search for numbered titles enababled
+
 = 1.0.6 =
 
-* Fix: Removed extra fields displayed when price field turned off
+* Fix: Removed extra fields outputted when price field turned off
 * Tweak: Added spinner so user knows the form is working
 
 = 1.0.5 =
