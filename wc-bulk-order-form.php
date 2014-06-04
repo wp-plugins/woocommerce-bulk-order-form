@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.7
+  Version: 1.0.8
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -43,13 +43,13 @@ class WCBulkOrderForm {
 		add_shortcode('wcbulkorder', array( &$this, 'wc_bulk_order_form' ) );
 		
 		// Functions to deal with the AJAX request - one for logged in users, the other for non-logged in users.
-		
 		add_action( 'wp_ajax_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));
 		add_action( 'wp_ajax_nopriv_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));	
-		add_action('wp_print_styles', array( &$this, 'load_styles' ), 0 );
-
-		add_action('init', array( &$this, 'register_script'));
-		add_action('wp_footer', array( &$this, 'print_script'));
+		add_action( 'wp_print_styles', array( &$this, 'load_styles' ), 0 );
+        add_action( 'wp', array($this,'process_bulk_order_form') );
+		add_action( 'wp_enqueue_scripts', array( &$this, 'enqeue_scripts' ) );
+		add_action('wp_footer', array( &$this, 'print_script' ) );
+		
 		
 	}
 	
@@ -82,71 +82,57 @@ class WCBulkOrderForm {
 		wp_register_style( 'wcbulkorderform', $css, array(), '', 'all' );
 		//wp_enqueue_style( 'wcbulkorderform' );
 	}
-	
-	/**
-	 * Load JS
-	 */   
-	public function load_jquery() {
-		wp_enqueue_script( 'wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
-		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products')));
-	}
-
-
-	/**
-	 * Load translations.
-	 */
-	public function languages() {
-		load_plugin_textdomain( 'wcbulkorderform', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
-	}
 
 	/**
 	 * Load JS
 	 */   
-	static function register_script() {
-		wp_register_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
-		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products')));
+	static function enqeue_scripts() {
+            global $post;
+            if (!has_shortcode($post->post_content,'wcbulkorder'))
+                    return;
+		$options = get_option('wcbulkorderform');
+		wp_enqueue_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
+		$display_images = isset($options['display_images']) ? $options['display_images'] : '';
+		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images ));
+                
 	}
 
 	static function print_script() {
 		if ( ! self::$add_script )
 			return;
 
-		wp_print_scripts('wcbulkorder_acsearch');
-		wp_enqueue_style( 'wcbulkorderform' );
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
+		wp_enqueue_style( 'wcbulkorderform' );
 	}
+
+	function process_bulk_order_form() {
+        if(isset($_POST['wcbulkorderproduct'])) {
+            global $woocommerce;
+
+			$prod_name = $_POST['wcbulkorderproduct'];
+			$prod_quantity = $_POST['wcbulkorderquantity'];
+			$prod_id = $_POST['wcbulkorderid'];
+			$i = 0;
+			foreach($prod_id as $key => $value) {
+				$variation_id = '';
+                $product_id = $value;
+				if ( 'product_variation' == get_post_type( $product_id ) ) {
+                    $variation_id = $product_id;
+                    $product_id = wp_get_post_parent_id( $variation_id );
+            	}
+                $woocommerce->cart->add_to_cart($product_id,$prod_quantity[$key],$variation_id,'',array());
+			}
+			
+		}
+    }
 	
 	/**
 	 * Create Bulk Order Form Shortcode
 	 * Source: http://wordpress.stackexchange.com/questions/53280/woocommerce-add-a-product-to-cart-programmatically-via-js-or-php
 	*/ 
 	public function wc_bulk_order_form ($atts){
-
-		$html = '';
 		self::$add_script = true;
-		$prod_name = '';
-		if(isset($_POST['submit'])) {
-			$prod_name = $_POST['wcbulkorderproduct'];
-			$prod_quantity = $_POST['wcbulkorderquantity'];
-			$prod_id = $_POST['wcbulkorderid'];
-			$i = 0;
-			foreach($prod_id as $key => $value) {
-				$ancestors = '';
-				$ancestors = get_post_ancestors( $prod_id );
-				
-				if (is_array($ancestors)) {
-					global $woocommerce;
-					$woocommerce->cart->add_to_cart($ancestors[0], $quantity = $_POST['wcbulkorderquantity'][$i], $variation_id = $_POST['wcbulkorderid'][$i]);
-					++$i;
-				}
-				else {
-					global $woocommerce;
-					$woocommerce->cart->add_to_cart($_POST['wcbulkorderid'][$i], $quantity = $_POST['wcbulkorderquantity'][$i]);
-					++$i;
-				}
-			}
-			
-		}
+
 		extract( shortcode_atts( array(
 		'rows' => $this->options['bulkorder_row_number'],
 		'price' => $this->options['display_price'],
@@ -156,7 +142,7 @@ class WCBulkOrderForm {
 		'add_rows' => 'false'
 		), $atts ) );
 		$i = 0;
-
+		$html = '';
 		if (isset($_POST['wcbulkorderid'])) {
 			if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)) {
 				echo '<p class="bulkorder-message">'.__( 'Success! Your products have been added to your shopping cart.', 'wcbulkorderform' ).'</p>';
@@ -380,6 +366,7 @@ HTML5;
                         $np = explode("-",str_replace("attribute_","",$attr_name));
                         $attr_name_clean = ucwords(implode(" ",$np));
                     }
+                    $attr_name_clean = str_replace("attribute_pa_","",$attr_name_clean);
 					$title .= " - " . $attr_name_clean . ": " . $attr_value;
                 }
 			}
