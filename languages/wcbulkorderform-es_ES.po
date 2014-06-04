@@ -1,0 +1,206 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Bulk Order Form\n"
+"POT-Creation-Date: 2014-04-29 23:25-0700\n"
+"PO-Revision-Date: 2014-04-29 23:41-0700\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es_ES\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.6.4\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-SearchPath-0: .\n"
+
+#: includes/wcbulkorder-settings.php:24
+msgid "Plugin Settings"
+msgstr "Configuración del plugin"
+
+#: includes/wcbulkorder-settings.php:31
+msgid "When searching for products search by:"
+msgstr "Durante la búsqueda de productos de búsqueda:"
+
+#: includes/wcbulkorder-settings.php:39
+msgid "SKU"
+msgstr "SKU"
+
+#: includes/wcbulkorder-settings.php:40
+msgid "ID"
+msgstr "Número de identificación"
+
+#: includes/wcbulkorder-settings.php:41 includes/wcbulkorder-settings.php:63
+msgid "Title"
+msgstr "Título"
+
+#: includes/wcbulkorder-settings.php:42
+msgid "All"
+msgstr "Todo"
+
+#: includes/wcbulkorder-settings.php:51
+msgid "Choose your product search results format"
+msgstr "Escoja su formato los resultados de búsqueda de productos"
+
+#: includes/wcbulkorder-settings.php:59
+msgid "Title - Price"
+msgstr "Título - Precio"
+
+#: includes/wcbulkorder-settings.php:60
+msgid "Title - Price - SKU"
+msgstr "Título - Precio - SKU"
+
+#: includes/wcbulkorder-settings.php:61
+msgid "SKU - Title - Price"
+msgstr "SKU - Título - Precio"
+
+#: includes/wcbulkorder-settings.php:62
+msgid "Title - SKU"
+msgstr "Título - SKU"
+
+#: includes/wcbulkorder-settings.php:72
+msgid "Display \"Add New Row\" Button?"
+msgstr "Display \"Añadir nueva fila \" Button?"
+
+#: includes/wcbulkorder-settings.php:80 includes/wcbulkorder-settings.php:98
+#: includes/wcbulkorder-settings.php:136
+msgid "Yes"
+msgstr "Sí"
+
+#: includes/wcbulkorder-settings.php:81 includes/wcbulkorder-settings.php:99
+#: includes/wcbulkorder-settings.php:137
+msgid "No"
+msgstr "No"
+
+#: includes/wcbulkorder-settings.php:90
+msgid "Display product images in autocomplete search?"
+msgstr ""
+"Imágenes de los productos que se exhiben en la búsqueda de autocompletado?"
+
+#: includes/wcbulkorder-settings.php:109
+msgid "Default Shortcode Options"
+msgstr "Opciones por defecto shortcode"
+
+#: includes/wcbulkorder-settings.php:116
+msgid "Number of rows to display on the bulk order form"
+msgstr "Número de filas que se muestran en el Bulk Order Form"
+
+#: includes/wcbulkorder-settings.php:128
+msgid "Display price on bulk order form?"
+msgstr "Visualización del precio en el Bulk Order Form"
+
+#: includes/wcbulkorder-settings.php:144
+msgid "Title for product fields"
+msgstr "Título para campos de productos"
+
+#: includes/wcbulkorder-settings.php:156
+msgid "Title for quantity fields"
+msgstr "Título para campos de cantidad"
+
+#: includes/wcbulkorder-settings.php:168
+msgid "Title for price fields"
+msgstr "Título para campos de precio"
+
+#: includes/wcbulkorder-settings.php:180
+msgid ""
+"Don't load jquery ui styles. (Don't check this unless you know your site is "
+"loading jquery ui styles from another source)"
+msgstr ""
+"No cargue estilos ui jquery. (No marque este a menos que sepa que su sitio "
+"está cargando estilos ui jquery de otra fuente)"
+
+#: includes/wcbulkorder-settings.php:207 includes/wcbulkorder-settings.php:208
+#: includes/wcbulkorder-settings.php:217 includes/wcbulkorder-settings.php:218
+#: includes/wcbulkorder-settings.php:272
+msgid "WC Bulk Order Form"
+msgstr "WC Bulk Order Form"
+
+#: includes/wcbulkorder-settings.php:231
+msgid "Settings"
+msgstr "Configuración"
+
+#: includes/wcbulkorder-settings.php:290
+msgid "Sell In Style With WooCommerce Bulk Order Pro!"
+msgstr "Vender In Style Con WooCommerce Bulk Order Pro!"
+
+#: includes/wcbulkorder-settings.php:290
+msgid "Only $19!"
+msgstr "Sólo $19!"
+
+#: includes/wcbulkorder-settings.php:292
+msgid ""
+"Go Pro with WooCommerce Bulk Order Pro. Includes all the great standard "
+"features found in this free version plus:"
+msgstr ""
+"Ir a Favor con WooCommerce Bulk Order Pro. Incluye todas las características "
+"estándar que se encuentran en esta versión gratuita y además:"
+
+#: includes/wcbulkorder-settings.php:295
+msgid "Let user search by product id, title, sku, or all"
+msgstr "Deje de búsqueda del usuario por ID de producto, título, sku, o todos"
+
+#: includes/wcbulkorder-settings.php:296
+msgid ""
+"Choose from 5 different label outputs for the product field on your bulk "
+"order form"
+msgstr ""
+"Elige entre 5 salidas de etiquetas diferentes para el campo del producto en "
+"su bulk order form"
+
+#: includes/wcbulkorder-settings.php:297
+msgid ""
+"Automatically add extra product rows with the \"add row\" button (can be "
+"turned on or off)"
+msgstr ""
+"Añadir automáticamente las filas de productos adicionales con el \"Añadir "
+"fila \" botón (puede ser activada o desactivada)"
+
+#: includes/wcbulkorder-settings.php:298
+msgid "Create and customize as many shortcodes as you want!"
+msgstr "Crear y personalizar la mayor cantidad de códigos cortos que quieras!"
+
+#: includes/wcbulkorder-settings.php:300
+msgid "Customizable for each shortcode."
+msgstr "Personalizable para cada código corto."
+
+#: includes/wcbulkorder-settings.php:302
+msgid "Buy Now"
+msgstr "Compre Ahora"
+
+#: includes/wcbulkorder-settings.php:478
+msgid "This feature only available in"
+msgstr "Esta característica sólo está disponible en"
+
+#: includes/wcbulkorder-settings.php:512
+msgid ""
+"<strong>Please note:</strong> you need to open your website in a new tab/"
+"browser window after updating the cart icon for the change to be visible!"
+msgstr ""
+
+#: wc-bulk-order-form.php:162
+msgid "Success! Your products have been added to your shopping cart."
+msgstr "¡Éxito! Sus productos se han añadido a su carrito de compras."
+
+#: wc-bulk-order-form.php:164
+msgid "Success! Your product has been added to your shopping cart."
+msgstr "¡Éxito! Su producto ha sido añadido a su carrito de compras."
+
+#: wc-bulk-order-form.php:166
+msgid "Invalid submission - please try again."
+msgstr "Presentación no válida - por favor intente de nuevo."
+
+#: wc-bulk-order-form.php:215
+msgid "Total Price:"
+msgstr "El precio total:"
+
+#: wc-bulk-order-form.php:228 wc-bulk-order-form.php:231
+msgid "Add Row"
+msgstr "Añadir Fila"
+
+#: wc-bulk-order-form.php:235
+msgid "Add To Cart"
+msgstr "Añadir al carro"
