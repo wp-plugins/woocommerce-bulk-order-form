@@ -52,6 +52,10 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 
 == Changelog ==
 
+= 1.0.9 =
+
+* Fix: Missing Translation Function
+
 = 1.0.8 =
 
 * Fix: Compatibility with pa_attribute format
@@ -99,6 +103,10 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 Initial Release
 
 == Upgrade Notice ==
+
+= 1.0.9 =
+
+* Fix: Missing Translation Function
 
 = 1.0.8 =
 
