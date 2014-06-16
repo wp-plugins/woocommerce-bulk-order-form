@@ -16,3 +16,6 @@ i.bulkorder_spinner {
 	background-position:right top;
 	background-size: 100%;
 }
+ul.ui-autocomplete{
+    z-index: 999999 !important;
+}

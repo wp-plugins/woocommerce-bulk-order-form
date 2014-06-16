@@ -122,6 +122,18 @@ class WCBulkOrderForm_Settings {
 				'id'			=> 'bulkorder_row_number'
 			)
 		);
+
+		add_settings_field(
+			'max_items',
+			__( 'Maximum Items to Display in a Search', 'wcbulkorderform' ),
+			array( &$this, 'text_element_callback' ),
+			$option,
+			'advanced_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'max_items'
+			)
+		);
 		
 		add_settings_field(
 			'display_price',
@@ -250,6 +262,7 @@ class WCBulkOrderForm_Settings {
 			'search_format'			=> '1',
 			'new_row_button'		=> 'false',
 			'bulkorder_row_number'	=> '5',
+			'max_items'				=> '-1',
 			'display_price'			=> 'true',
 			'product_field_title'	=> 'Product',
 			'quantity_field_title'	=> 'Quantity',

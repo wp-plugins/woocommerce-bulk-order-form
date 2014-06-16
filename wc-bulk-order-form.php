@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.0.9
+  Version: 1.1.0
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -47,8 +47,8 @@ class WCBulkOrderForm {
 		add_action( 'wp_ajax_nopriv_myprefix_autocompletesearch', array( &$this, 'myprefix_autocomplete_suggestions' ));	
 		add_action( 'wp_print_styles', array( &$this, 'load_styles' ), 0 );
         add_action( 'wp', array($this,'process_bulk_order_form') );
-		add_action( 'wp_enqueue_scripts', array( &$this, 'enqeue_scripts' ) );
-		add_action('wp_footer', array( &$this, 'print_script' ) );
+		add_action('init', array( &$this, 'register_script'));
+		add_action('wp_footer', array( &$this, 'print_script'));
 		
 		
 	}
@@ -93,21 +93,22 @@ class WCBulkOrderForm {
 	/**
 	 * Load JS
 	 */   
-	static function enqeue_scripts() {
-            global $post;
-            if (!has_shortcode($post->post_content,'wcbulkorder'))
-                    return;
+	static function register_script() {
 		$options = get_option('wcbulkorderform');
-		wp_enqueue_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
+		wp_register_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
 		$display_images = isset($options['display_images']) ? $options['display_images'] : '';
-		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images ));
-                
+		$noproductsfound = __( 'No Products Were Found', 'wcbulkorderform' );
+		$variation_noproductsfound = __( 'No Variations', 'wcbulkorderform' );
+		$selectaproduct = __( 'Please Select a Product', 'wcbulkorderform' );
+		$enterquantity = __( 'Enter Quantity', 'wcbulkorderform' );
+		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound));
 	}
 
 	static function print_script() {
 		if ( ! self::$add_script )
 			return;
 
+		wp_print_scripts('wcbulkorder_acsearch');
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		wp_enqueue_style( 'wcbulkorderform' );
 	}
@@ -245,6 +246,7 @@ HTML5;
 		$term = '';
 		$term = $_REQUEST['term'];
 		$search_by = isset($this->options['search_by']) ? $this->options['search_by'] : '4';
+		$max_items = isset($this->options['max_items']) ? $this->options['max_items'] : '-1';
 		if (empty($term)) die();
 		if ( is_numeric( $term ) ) {
 		
@@ -252,7 +254,7 @@ HTML5;
 				$products1 = array(
 					'post_type'                        => array ('product', 'product_variation'),
 					'post_status'                 => 'publish',
-					'posts_per_page'         => -1,
+					'posts_per_page'         => $max_items,
 					'post__in'                         => array(0, $term),
 					'fields'                        => 'ids'
 				);
@@ -260,7 +262,7 @@ HTML5;
 				$products2 = array(
 					'post_type'                        => array ('product', 'product_variation'),
 					'post_status'                 => 'publish',
-					'posts_per_page'         => -1,
+					'posts_per_page'         => $max_items,
 					'post_parent'                 => $term,
 					'fields'                        => 'ids'
 				);
@@ -269,7 +271,7 @@ HTML5;
 				$products4 = array(
 					'post_type' 			=> array ('product', 'product_variation'),
 					'post_status'         	=> 'publish',
-					'posts_per_page'         => -1,
+					'posts_per_page'         => $max_items,
 					's'                 	=> $term,
 					'fields'                        => 'ids'
 				);
@@ -278,7 +280,7 @@ HTML5;
 				$products3 = array(
 					'post_type'                        => array ('product', 'product_variation'),
 					'post_status'                 => 'publish',
-					'posts_per_page'         => -1,
+					'posts_per_page'         => $max_items,
 					'meta_query'                 => array(
 							array(
 							'key'         => '_sku',
@@ -304,7 +306,7 @@ HTML5;
 				$products1 = array(
 						'post_type'                        => array ('product', 'product_variation'),
 						'post_status'                 => 'publish',
-						'posts_per_page'         => -1,
+						'posts_per_page'         => $max_items,
 						'meta_query'                 => array(
 								array(
 								'key'         => '_sku',
@@ -319,7 +321,7 @@ HTML5;
 				$products2 = array(
 					'post_type' 			=> array ('product', 'product_variation'),
 					'post_status'         	=> 'publish',
-					'posts_per_page'         => -1,
+					'posts_per_page'         => $max_items,
 					's'                 	=> $term,
 					'fields'                        => 'ids'
 				);
@@ -341,7 +343,7 @@ HTML5;
 		global $post, $woocommerce, $product;
 		
 		
-		foreach ($products as $prod): setup_postdata($prod);	
+		foreach ($products as $prod):	
 
 			$post_type = get_post_type($prod);
 
