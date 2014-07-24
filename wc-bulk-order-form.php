@@ -166,17 +166,21 @@ class WCBulkOrderForm {
 			}
 			switch($items){
 				case 0:
-					$message = '<div class="woocommerce-message" style="border-color: red">'.__("Looks like there was an error. Please try again.", "wcbulkorderform").'</div>';
+					$message = __("Looks like there was an error. Please try again.", "wcbulkorderform");
+					wc_add_notice( $message, 'error' );
 					break;
 				case 1:
-					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">View Cart</a>'.__("Your product was successfully added to your cart.", "wcbulkorderform").'</div>';
+					$message = '<a class="button wc-forward" href="'.$cart_url.'">View Cart</a>'.__("Your product was successfully added to your cart.", "wcbulkorderform");
+					wc_add_notice( $message, 'success' );
 					break;
 				case 2:
-					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">'.__("View Cart</a> Your products were successfully added to your cart.", "wcbulkorderform").'</div>';
+					$message = '<a class="button wc-forward" href="'.$cart_url.'">'.__("View Cart</a> Your products were successfully added to your cart.", "wcbulkorderform");
+					wc_add_notice( $message, 'success' );
 					break;
 			}
-			$message = apply_filters('wc_bulk_order_form_message', $message, $items, $cart_url);
-			echo $message;
+			wc_print_notices();
+			//$message = apply_filters('wc_bulk_order_form_message', $message, $items, $cart_url);
+			//echo $message;
 		}
 
 		$html = <<<HTML
