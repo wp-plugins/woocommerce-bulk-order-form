@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.1.0
+  Version: 1.1.1
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -151,14 +151,30 @@ class WCBulkOrderForm {
 		), $atts ) );
 		$i = 0;
 		$html = '';
+		$items = '';
+		$cart_url = $woocommerce->cart->get_cart_url();
+		
 		if (isset($_POST['wcbulkorderid'])) {
-			if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)) {
-				echo '<p class="bulkorder-message">'.__( 'Success! Your products have been added to your shopping cart.', 'wcbulkorderform' ).'</p>';
+			if (($_POST['wcbulkorderid'][0] > 0) && ($_POST['wcbulkorderid'][1] > 0)){
+				$items = 2;
 			} else if($_POST['wcbulkorderid'][0] > 0){
-				echo '<p class="bulkorder-message">'.__( 'Success! Your product has been added to your shopping cart.', 'wcbulkorderform' ).'</p>';
-			} else if((isset($_POST['submit'])) && ($_POST['wcbulkorderid'][0] <= 0)) {
-				echo '<p class="bulkorder-message fail">'.__( 'Invalid submission - please try again.', 'wcbulkorderform' ).'</p>';
+				$items = 1;
+			} else if((isset($_POST['submit'])) && ($_POST['wcbulkorderid'][0] <= 0)){
+				$items = 0;
 			}
+			switch($items){
+				case 0:
+					$message = '<div class="woocommerce-message" style="border-color: red">'.__("Looks like there was an error. Please try again.", "wcbulkorderform").'</div>';
+					break;
+				case 1:
+					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">View Cart</a>'.__("Your product was successfully added to your cart.", "wcbulkorderform").'</div>';
+					break;
+				case 2:
+					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">'.__("View Cart</a> Your products were successfully added to your cart.", "wcbulkorderform").'</div>';
+					break;
+			}
+			$message = apply_filters('wc_bulk_order_form_message', $message, $items, $cart_url);
+			echo $message;
 		}
 
 		$html = <<<HTML
@@ -384,37 +400,38 @@ HTML5;
 			// Initialise suggestion array
 			$suggestion = array();
 			$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
+			$price = apply_filters('wc_bulk_order_form_price' , $price, $product);
 				switch ($switch_data) {
 					case 1:
 						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($sku.' - '.$title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+							$label = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
 						} else {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+							$label = html_entity_decode($title. ' - '.$symbol.$price);
 						}
 						break;
 					case 2:
 						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product).' - '.$sku);
+							$label = html_entity_decode($title. ' - '.$symbol.$price.' - '.$sku);
 						} else {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+							$label = html_entity_decode($title. ' - '.$symbol.$price);
 						}
 						break;
 					case 3:
-						$suggestion['label'] = html_entity_decode($title .' - '.$symbol.apply_filters('wc_bulk_order_form_price' , $price, $product));
+						$label = html_entity_decode($title .' - '.$symbol.$price);
 						break;
 					case 4:
 						if (!empty($sku)) {
-							$suggestion['label'] = html_entity_decode($title. ' - '.$sku);
+							$label = html_entity_decode($title. ' - '.$sku);
 						} else {
-							$suggestion['label'] = html_entity_decode($title);
+							$label = html_entity_decode($title);
 						}
 						break;
 					case 5:
-						$suggestion['label'] = html_entity_decode($title);
+						$label = html_entity_decode($title);
 						break;
 				}
-
-			$suggestion['price'] = apply_filters('wc_bulk_order_form_price' , $price, $product);
+			$suggestion['label'] = apply_filters('wc_bulk_order_form_label', $label, $price, $title, $sku, $symbol);
+			$suggestion['price'] = $price;
 			$suggestion['symbol'] = $symbol;
 			$suggestion['id'] = $id;
 			if (!empty($variation_id)) {
