@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.1.1
+  Version: 1.1.2
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -369,6 +369,7 @@ HTML5;
 				$price = number_format((float)$product->get_price(), 2, '.', '');
 				$sku = $product->get_sku();
 				$title = get_the_title($product->id);
+				$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
 			}
 			
 			elseif ( 'product_variation' == $post_type ) {
@@ -393,10 +394,12 @@ HTML5;
                     }
                     $attr_name_clean = str_replace("attribute_pa_","",$attr_name_clean);
 					$title .= " - " . $attr_name_clean . ": " . $attr_value;
+					$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
                 }
 			}
 			
 			$symbol = get_woocommerce_currency_symbol();
+			$symbol = html_entity_decode($symbol, ENT_COMPAT, 'UTF-8');
 			// Initialise suggestion array
 			$suggestion = array();
 			$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
@@ -404,30 +407,30 @@ HTML5;
 				switch ($switch_data) {
 					case 1:
 						if (!empty($sku)) {
-							$label = html_entity_decode($sku.' - '.$title. ' - '.$symbol.$price);
+							$label = $sku.' - '.$title. ' - '.$symbol.$price;
 						} else {
-							$label = html_entity_decode($title. ' - '.$symbol.$price);
+							$label = $title. ' - '.$symbol.$price;
 						}
 						break;
 					case 2:
 						if (!empty($sku)) {
-							$label = html_entity_decode($title. ' - '.$symbol.$price.' - '.$sku);
+							$label = $title. ' - '.$symbol.$price.' - '.$sku;
 						} else {
-							$label = html_entity_decode($title. ' - '.$symbol.$price);
+							$label = $title. ' - '.$symbol.$price;
 						}
 						break;
 					case 3:
-						$label = html_entity_decode($title .' - '.$symbol.$price);
+						$label = $title .' - '.$symbol.$price;
 						break;
 					case 4:
 						if (!empty($sku)) {
-							$label = html_entity_decode($title. ' - '.$sku);
+							$label = $title. ' - '.$sku;
 						} else {
-							$label = html_entity_decode($title);
+							$label = $title;
 						}
 						break;
 					case 5:
-						$label = html_entity_decode($title);
+						$label = $title;
 						break;
 				}
 			$suggestion['label'] = apply_filters('wc_bulk_order_form_label', $label, $price, $title, $sku, $symbol);
