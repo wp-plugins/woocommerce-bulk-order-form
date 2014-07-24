@@ -111,6 +111,7 @@ class WCBulkOrderForm {
 		wp_print_scripts('wcbulkorder_acsearch');
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		wp_enqueue_style( 'wcbulkorderform' );
+		wp_enqueue_style('woocommerce-general-css');
 	}
 
 	function process_bulk_order_form() {
