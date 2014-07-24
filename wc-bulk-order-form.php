@@ -139,6 +139,7 @@ class WCBulkOrderForm {
 	 * Source: http://wordpress.stackexchange.com/questions/53280/woocommerce-add-a-product-to-cart-programmatically-via-js-or-php
 	*/ 
 	public function wc_bulk_order_form ($atts){
+		global $woocommerce;
 		self::$add_script = true;
 
 		extract( shortcode_atts( array(
