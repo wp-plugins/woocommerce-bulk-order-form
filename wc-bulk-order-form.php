@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 1.1.2
+  Version: 1.1.3
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -111,7 +111,6 @@ class WCBulkOrderForm {
 		wp_print_scripts('wcbulkorder_acsearch');
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		wp_enqueue_style( 'wcbulkorderform' );
-		wp_enqueue_style('woocommerce-general-css');
 	}
 
 	function process_bulk_order_form() {
@@ -128,8 +127,10 @@ class WCBulkOrderForm {
 				if ( 'product_variation' == get_post_type( $product_id ) ) {
                     $variation_id = $product_id;
                     $product_id = wp_get_post_parent_id( $variation_id );
+                    $product = new WC_Product_Variation($variation_id);
+					$attributes = $product->get_variation_attributes();
             	}
-                $woocommerce->cart->add_to_cart($product_id,$prod_quantity[$key],$variation_id,'',array());
+                $woocommerce->cart->add_to_cart($product_id,$prod_quantity[$key],$variation_id,$attributes,null);
 			}
 			
 		}
@@ -166,21 +167,17 @@ class WCBulkOrderForm {
 			}
 			switch($items){
 				case 0:
-					$message = __("Looks like there was an error. Please try again.", "wcbulkorderform");
-					wc_add_notice( $message, 'error' );
+					$message = '<div class="woocommerce-message" style="border-color: red">'.__("Looks like there was an error. Please try again.", "wcbulkorderform").'</div>';
 					break;
 				case 1:
-					$message = '<a class="button wc-forward" href="'.$cart_url.'">View Cart</a>'.__("Your product was successfully added to your cart.", "wcbulkorderform");
-					wc_add_notice( $message, 'success' );
+					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">View Cart</a>'.__("Your product was successfully added to your cart.", "wcbulkorderform").'</div>';
 					break;
 				case 2:
-					$message = '<a class="button wc-forward" href="'.$cart_url.'">'.__("View Cart</a> Your products were successfully added to your cart.", "wcbulkorderform");
-					wc_add_notice( $message, 'success' );
+					$message = '<div class="woocommerce-message"><a class="button wc-forward" href="'.$cart_url.'">'.__("View Cart</a> Your products were successfully added to your cart.", "wcbulkorderform").'</div>';
 					break;
 			}
-			wc_print_notices();
-			//$message = apply_filters('wc_bulk_order_form_message', $message, $items, $cart_url);
-			//echo $message;
+			$message = apply_filters('wc_bulk_order_form_message', $message, $items, $cart_url);
+			echo $message;
 		}
 
 		$html = <<<HTML
