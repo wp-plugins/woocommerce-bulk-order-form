@@ -9,7 +9,6 @@ class WCBulkOrderForm_Settings {
 	 * User settings.
 	 */
 	public function init_settings() {
-		//wp_register_style( 'wcbulkorderform-admin', plugins_url( 'css/wcbulkorderform-icons-pro.css', dirname(__FILE__) ), array(), '', 'all' );
 
 		$option = 'wcbulkorderform';
 	
@@ -21,184 +20,24 @@ class WCBulkOrderForm_Settings {
 		// Section.
 		add_settings_section(
 			'plugin_settings',
-			__( 'Plugin Settings', 'wcbulkorderform' ),
+			__( 'Select a Template', 'wcbulkorderform' ),
 			array( &$this, 'section_options_callback' ),
 			$option
 		);
-		
 		add_settings_field(
-			'search_by',
-			__( 'When searching for products search by:', 'wcbulkorderform' ),
+			'template_style',
+			__( 'Select which template you want to use. Get more templates and extensions below!', 'wcbulkorderform' ),
 			array( &$this, 'radio_element_callback' ),
 			$option,
 			'plugin_settings',
 			array(
 				'menu'			=> $option,
-				'id'			=> 'search_by',
-				'options' 		=> array(
-					'1'			=> __( 'SKU' , 'wcbulkorderform' ),
-					'2'			=> __( 'ID' , 'wcbulkorderform' ),
-					'3'			=> __( 'Title' , 'wcbulkorderform' ),
-					'4'			=> __( 'All' , 'wcbulkorderform' )
-				),
-				'disabled'		=> true,
-				'default'		=> '4'
-			)
-		);
-		
-		add_settings_field(
-			'search_format',
-			__( 'Choose your product search results format', 'wcbulkorderform' ),
-			array( &$this, 'radio_element_callback' ),
-			$option,
-			'plugin_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'search_format',
-				'options' 		=> array(
-					'1'			=> __( 'Title - Price' , 'wcbulkorderform' ),
-					'2'			=> __( 'Title - Price - SKU' , 'wcbulkorderform' ),
-					'3'			=> __( 'SKU - Title - Price' , 'wcbulkorderform' ),
-					'4'			=> __( 'Title - SKU' , 'wcbulkorderform' ),
-					'5'			=> __( 'Title' , 'wcbulkorderform' )
-				),
-				'disabled'		=> true,
-				'default'		=> '1'
-			)
-		);
-		
-		add_settings_field(
-			'new_row_button',
-			__( 'Display "Add New Row" Button?', 'wcbulkorderform' ),
-			array( &$this, 'radio_element_callback' ),
-			$option,
-			'plugin_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'new_row_button',
-				'options' 		=> array(
-					'true'		=> __( 'Yes' , 'wcbulkorderform' ),
-					'false'		=> __( 'No' , 'wcbulkorderform' )
-				),
-				'disabled'		=> true,
-				'default'		=> 'false'
+				'id'			=> 'template_style',
+				'options' 		=> $this->template_types(),
+				'default'		=> ''
 			)
 		);
 
-		add_settings_field(
-			'display_images',
-			__( 'Display product images in autocomplete search?', 'wcbulkorderform' ),
-			array( &$this, 'radio_element_callback' ),
-			$option,
-			'plugin_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'display_images',
-				'options' 		=> array(
-					'true'		=> __( 'Yes' , 'wcbulkorderform' ),
-					'false'		=> __( 'No' , 'wcbulkorderform' )
-				),
-				'disabled'		=> true,
-				'default'		=> 'false'
-			)
-		);
-		
-		// Section.
-		add_settings_section(
-			'advanced_settings',
-			__( 'Default Shortcode Options', 'wcbulkorderform' ),
-			array( &$this, 'section_options_callback' ),
-			$option
-		);
-		
-		add_settings_field(
-			'bulkorder_row_number',
-			__( 'Number of rows to display on the bulk order form', 'wcbulkorderform' ),
-			array( &$this, 'text_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'bulkorder_row_number'
-			)
-		);
-
-		add_settings_field(
-			'max_items',
-			__( 'Maximum Items to Display in a Search', 'wcbulkorderform' ),
-			array( &$this, 'text_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'max_items'
-			)
-		);
-		
-		add_settings_field(
-			'display_price',
-			__( 'Display price on bulk order form?', 'wcbulkorderform' ),
-			array( &$this, 'radio_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'display_price',
-				'options' 		=> array(
-					'true'			=> __( 'Yes' , 'wcbulkorderform' ),
-					'false'			=> __( 'No' , 'wcbulkorderform' )
-				),
-			)
-		);
-		
-		add_settings_field(
-			'product_field_title',
-			__( 'Title for product fields', 'wcbulkorderform' ),
-			array( &$this, 'text_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'product_field_title'
-			)
-		);
-		
-		add_settings_field(
-			'quantity_field_title',
-			__( 'Title for quantity fields', 'wcbulkorderform' ),
-			array( &$this, 'text_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'quantity_field_title'
-			)
-		);
-		
-		add_settings_field(
-			'price_field_title',
-			__( 'Title for price fields', 'wcbulkorderform' ),
-			array( &$this, 'text_element_callback' ),
-			$option,
-			'advanced_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'price_field_title'
-			)
-		);
-
-		add_settings_field(
-			'no_load_css',
-			__( "Don't load jquery ui styles. (Don't check this unless you know your site is loading jquery ui styles from another source)", 'wcbulkorderform' ),
-			array( &$this, 'checkbox_element_callback' ),
-			$option,
-			'plugin_settings',
-			array(
-				'menu'			=> $option,
-				'id'			=> 'no_load_css',
-			)
-		);
-		
 		// Register settings.
 		register_setting( $option, $option, array( &$this, 'wcbulkorderform_options_validate' ) );
 
@@ -207,6 +46,16 @@ class WCBulkOrderForm_Settings {
 		if ( empty( $option_values ) ) {
 			$this->default_settings();
 		}
+	}
+
+	function template_types(){
+		$sections = get_option('wcbulkorderform_sections');
+		$sections = $sections['templates'];
+		$templates = array();
+		foreach ($sections as $template){
+			$templates[$template] = $template. __( ' Template' , 'wcbulkorderform' );
+		}
+		return $templates;
 	}
 
 	/**
@@ -257,72 +106,204 @@ class WCBulkOrderForm_Settings {
 	 */
 	public function default_settings() {
 		global $options;
-		$default = array(
-			'search_by'				=> '4',
-			'search_format'			=> '1',
-			'new_row_button'		=> 'false',
-			'bulkorder_row_number'	=> '5',
-			'max_items'				=> '-1',
-			'display_price'			=> 'true',
-			'product_field_title'	=> 'Product',
-			'quantity_field_title'	=> 'Quantity',
-			'price_field_title'		=> 'Price',
-			'no_load_css'			=> '',
-			'display_images'		=> 'false'
-		);
-		
-		update_option( 'wcbulkorderform', $default );
+		$sections = get_option('wcbulkorderform_sections');
+		if(empty($sections['templates'])){
+			$sections['templates'] = array();
+		}
+		update_option('wcbulkorderform_sections',$sections);
 	}
 
 	/**
 	 * Build the options page.
 	 */
-	public function wcbulkorderform_options_do_page() {		
+	public function wcbulkorderform_options_do_page() {
 		?>
 	
 		<div class="wrap">
 			<div class="icon32" id="icon-options-general"><br /></div>
 			<h2><?php _e('WC Bulk Order Form','wcbulkorderform') ?></h2>
-				<?php 
+			<?php
+	        if (isset($_GET['tab'])) {
+	            $active_tab = $_GET['tab'];
+	        } else {
+	            //set display_options tab as a default tab.
+	            $active_tab = 'template_selection';
+	        }
+	   
+	        if (is_plugin_active('wpovernight-sidekick/wpovernight-sidekick.php')) {
+			?>
+	        <h2 class="nav-tab-wrapper">
+	            <a href="?page=wcbulkorderform_options_page&tab=template_selection" class="nav-tab <?php echo $active_tab == 'template_selection' ? 'nav-tab-active' : ''; ?>">Template Selection</a>  
+	            <a href="?page=wcbulkorderform_options_page&tab=template_settings" class="nav-tab <?php echo $active_tab == 'template_settings' ? 'nav-tab-active' : ''; ?>">Template Settings</a>
+	        </h2>
+			<?php
+			} else {
+			?>
+			<h2 class="nav-tab-wrapper">
+	            <a href="?page=wcbulkorderform_options_page&tab=template_selection" class="nav-tab <?php echo $active_tab == 'template_selection' ? 'nav-tab-active' : ''; ?>">Template Selection</a>  
+	            <a href="?page=wcbulkorderform_options_page&tab=template_settings" class="nav-tab <?php echo $active_tab == 'template_settings' ? 'nav-tab-active' : ''; ?>">Template Settings</a>
+	        </h2>
+			<?php }
 				global $options;
+				$sections = get_option('wcbulkorderform_sections');
+				//print_r($sections);
 				//$option = get_option('wcbulkorderform');
 				//print_r($option); //for debugging
 				?>
 				<form method="post" action="options.php">
 				<?php
-					//delete_option('wcbulkorderform');		
-					settings_fields( 'wcbulkorderform' );
-					do_settings_sections( 'wcbulkorderform' );
-
-					submit_button();
+					if ($active_tab == 'template_selection') {
+						settings_fields( 'wcbulkorderform' );
+						do_settings_sections( 'wcbulkorderform' );
+						submit_button('Save Template Selection');
+			        } else {
+			            do_action('wcbulkorderform_settings');
+			            submit_button();
+			        }
 				?>
 
 			</form>
-		</div>
-		<div style="line-height: 20px; background: #F3F3F3;-moz-border-radius: 3px;border-radius: 3px;padding: 10px;-moz-box-shadow: 0 0 5px #ff0000;-webkit-box-shadow: 0 0 5px#ff0000;box-shadow: 0 0 5px #ff0000;padding: 10px;margin:0px auto; font-size: 13.8px;width: 60%;float: left"> 
-			<h2><?php _e('Sell In Style With WooCommerce Bulk Order Pro!','wcbulkorderform') ?> - <span style="color:green"><a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/?utm_source=wordpress&utm_medium=wcbulkorderformfree&utm_campaign=bulkorderformbuy" style="color:green"><?php _e('Only $19!','wcbulkorderform') ?></a></span></h2>
-			<br>
-			<?php _e('Go Pro with WooCommerce Bulk Order Pro. Includes all the great standard features found in this free version plus:','wcbulkorderform') ?>
-			<br>
-			<ul style="list-style-type:circle;margin-left: 40px">
-				<li><?php _e('Let user search by product id, title, sku, or all','wcbulkorderform') ?></li>
-				<li><?php _e('Choose from 5 different label outputs for the product field on your bulk order form','wcbulkorderform') ?></li>
-				<li><?php _e('Automatically add extra product rows with the "add row" button (can be turned on or off)','wcbulkorderform') ?>*</li>
-				<li><?php _e('Create and customize as many shortcodes as you want!','wcbulkorderform') ?></li>
-			</ul>
-			*<?php _e('Customizable for each shortcode.','wcbulkorderform') ?>
-			<br><br>
-			<a class="button button-primary" style="text-align: center;margin: 0px auto" href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/?utm_source=wordpress&utm_medium=wcbulkorderformfree&utm_campaign=bulkorderformbuy"><?php _e('Buy Now','wcbulkorderform') ?></a>
-		</div>
-		<script type="text/javascript">
+			<?php if (!class_exists('WCBulkOrderFormPro') || !class_exists('WCBulkOrder_Product_Limiter') || !class_exists('WCBulkOrderForm_Prepopulated')){ ?>
+			<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('.extensions .more').hide();
+
+				jQuery('.extensions > li').click(function() {
+					jQuery(this).toggleClass('expanded');
+					jQuery(this).find('.more').slideToggle();
+				});
+			});
+			</script>
+
+			<div class="wcpdf-extensions-ad">
+
+				<img src="<?php echo plugins_url( 'images/wpo-helper.png', __FILE__ ); ?>" class="wpo-helper">
+				<h3><?php _e( 'Check out these premium extensions!', 'wcbulkorderform' ); ?></h3>
+				<i>(<?php _e( 'click items to read more', 'wcbulkorderform' ); ?>)</i>
+				<ul class="extensions">
+
+					<?php
+					if (!class_exists('WCBulkOrderFormPro')) {
+						?>
+						<li>
+							<?php _e('Go Pro: Get WooCommerce Bulk Order Form Pro!', 'wcbulkorderform')?>
+							<div class="more" style="display:none;">
+							<?php _e( 'Supercharge WooCommerce Bulk Order Form with the following features:', 'wcbulkorderform' ); ?>
+							<ul>
+								<li><?php _e('Let user search by product id, title, sku, or all','wcbulkorderform') ?></li>
+								<li><?php _e('Choose from 5 different label outputs for the product field on your bulk order form','wcbulkorderform') ?></li>
+								<li><?php _e('Automatically add extra product rows with the "add row" button (can be turned on or off)','wcbulkorderform') ?>*</li>
+								<li><?php _e('Create and customize as many shortcodes as you want!','wcbulkorderform') ?></li>
+							</ul>
+							<a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/" target="_blank"><?php _e("Get WooCommerce Bulk Order Form Pro!", 'wcbulkorderform'); ?></a>
+						</li>
+					<?php } ?>
+
+					<?php
+					if (!class_exists('WCBulkOrder_Product_Limiter')) {
+						?>
+						<li>
+							<?php _e('Bulk Order Form Limit Products', 'wcbulkorderform')?>
+							<div class="more" style="display:none;">
+								<?php _e( 'Exclude or include specific products or variations with a simple checkbox.', 'wcbulkorderform' ); ?><br/>
+								<a href="https://wpovernight.com/downloads/bulk-order-form-limit-products/" target="_blank"><?php _e("Get Bulk Order Form Limit Products!", 'wcbulkorderform'); ?></a>
+							</div>
+						</li>
+					<?php } ?>
+					<?php
+					if (!class_exists('WCBulkOrderForm_Prepopulated')) {
+						?>
+						<li>
+							<?php _e('Bulk Order Form Prepopulated Template', 'wcbulkorderform')?>
+							<div class="more" style="display:none;">
+								<?php _e( 'Remove the autocomplete search and pre-populate the form with your products and variations.', 'wcbulkorderform' ); ?><br/>
+								<a href="https://wpovernight.com/downloads/wc-bulk-order-form-prepopulated/" target="_blank"><?php _e("Get Bulk Order Form Prepopulated Template!", 'wcbulkorderform'); ?></a>
+							</div>
+						</li>
+					<?php } ?>
+				</ul>
+			</div>
+			<style>
+				.wcpdf-extensions-ad {
+					position: relative;
+					min-height: 90px;
+					border: 1px solid #3D5C99;
+					background-color: #EBF5FF;	
+					border-radius: 5px;
+					padding: 15px;
+					padding-left: 100px;
+					margin-top: 15px;
+					margin-bottom: 15px;
+				}
+
+				img.wpo-helper {
+					position: absolute;
+					top: -20px;
+					left: 3px;
+				}
+
+				.wcpdf-extensions-ad h3 {
+					margin: 0;
+				}
+
+				.wcpdf-extensions-ad ul {
+					margin: 0;
+					margin-left: 1.5em;
+				}
+
+				.extensions li {
+					margin: 0;
+				}
+
+				.extensions li ul {
+					list-style-type: square;
+					margin-top: 0.5em;
+					margin-bottom: 0.5em;
+				}
+
+				.extensions > li:before { 
+					content: "";
+					border-color: transparent transparent transparent #111;
+					border-style: solid;
+					border-width: 0.35em 0.35em 0.35em 0.45em;
+					display: block;
+					height: 0;
+					width: 0;
+					left: -1em;
+					top: 0.9em;
+					position: relative;
+				}
+
+				.extensions .expanded:before {
+					border-color: #111 transparent transparent transparent;
+					left: -1.17em;
+					border-width: 0.45em 0.45em 0.35em 0.35em !important;
+				}
+
+				.extensions .more {
+					padding: 10px;
+					background-color: white;
+					border: 1px solid #ccc;
+					border-radius: 5px;
+				}
+
+				.extensions table td {
+					vertical-align: top;
+				}
+			</style>
+			<?php } ?>
+			<script type="text/javascript">
 			jQuery('.hidden-input').click(function() {
 				jQuery(this).closest('.hidden-input').prev('.pro-feature').show('slow');
 				jQuery(this).closest('.hidden-input').hide();
 			});
 			jQuery( document ).ready(function( $ ) {
-			    $("input[id^=wcbulkorderform]:radio:lt(13)").attr('disabled',true);
+			    $("input.wcbulkorder-disabled").attr('disabled',true);
 			});
 		</script>
+		<h2>Customer Support</h2>
+		<p>Have customer support questions? Contact support@wpovernight.com. For instant help browse our <a href="https://wpovernight.com/faq-category/bulk-order-form/" target="_blank">Bulk Order Form FAQs</a>.</p>
+		</div>
 		<?php
 	}
 
@@ -487,12 +468,6 @@ class WCBulkOrderForm_Settings {
 			$html .= sprintf( '<p class="description">%s</p>', $args['description'] );
 		}
 
-		if (isset( $args['disabled'] )) {
-			$html .= ' <span style="display:none;" class="pro-feature"><i>'. __('This feature only available in', 'wcbulkorderform') .' <a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/?utm_source=wordpress&utm_medium=wcbulkorderformfree&utm_campaign=bulkorderformfree">Bulk Order Form Pro</a></i></span>';
-			$html .= '<div style="position:absolute; left:0; right:0; top:0; bottom:0; background-color:white; -moz-opacity: 0; opacity:0;filter: alpha(opacity=0);" class="hidden-input"></div>';
-			$html = '<div style="display:inline-block; position:relative;">'.$html.'</div>';
-		}
-			
 		echo $html;
 	}
 
