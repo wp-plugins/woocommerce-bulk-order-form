@@ -3,8 +3,8 @@ Contributors: jprummer
 Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
 Requires at least: 3.4
-Tested up to: 3.9.2
-Stable tag: 1.1.4
+Tested up to: 4.0
+Stable tag: 2.0.1
 
 Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
@@ -20,7 +20,9 @@ This plugin helps you sell more by letting you add a WooCommerce bulk/quick orde
 * Set title for price input field column
 * Price totals are calculated in real time
 * Disable jquery ui css or add your own
-
+* Include specific products or variations by id
+* Exclude specific products or variations by id
+* Include only specific categories
 
 There's also a pro version found at [WP Overnight](https://wpovernight.com/downloads/woocommerce-bulk-order-form/). Why? The funds generated help to ensure long term support of this plugin. It's like a donation but better. :)
 
@@ -51,6 +53,21 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 2.0.1 =
+
+* New: Display attribute name and value or just attribute value in variations
+* Fix: Attribute capitilization.
+* Fix: Bug in standard template with variations.
+
+= 2.0 =
+
+**This is a major update. Test thoroughly and <a href="https://wpovernight.com/2014/11/woocommerce-bulk-order-form-2-0-update/" title="WooCommerce Bulk Order Form 2.0 Update">review the full changes here</a>**
+
+* New: Completely new template for better handling variations.
+* New: Limit product search to a specific category via shortcode.
+* New: Include only a specific set of products globally via the limit products extension or per shortcode.
+* New: Exclude only a specific set of products globally via the limit products extension or per shortcode.
 
 = 1.1.4 =
 
@@ -128,6 +145,21 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 Initial Release
 
 == Upgrade Notice ==
+
+= 2.0.1 =
+
+* New: Display attribute name and value or just attribute value in variations
+* Fix: Attribute capitilization.
+* Fix: Bug in standard template with variations.
+
+= 2.0 =
+
+**This is a major update. Test thoroughly and <a href="https://wpovernight.com/2014/11/woocommerce-bulk-order-form-2-0-update/" title="WooCommerce Bulk Order Form 2.0 Update">review the full changes here</a>**
+
+* New: Completely new template for better handling variations.
+* New: Limit product search to a specific category via shortcode.
+* New: Include only a specific set of products globally via the limit products extension or per shortcode.
+* New: Exclude only a specific set of products globally via the limit products extension or per shortcode.
 
 = 1.1.4 =
 
