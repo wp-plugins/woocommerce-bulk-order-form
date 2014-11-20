@@ -277,135 +277,218 @@ HTML5;
 		$max_items = isset($this->options['max_items']) ? $this->options['max_items'] : '-1';
 		$excluded_products = apply_filters('wc_bulk_order_excluded_products', $excluded_products);
 		$included_products = apply_filters('wc_bulk_order_included_products', $included_products);
-		if(empty($category)){
-			$categories = get_terms('product_cat');
-			foreach($categories as $cat){
-				array_push($category,$cat->term_id);
-			}
-		}
 		if (empty($term)) {
 			$term = '';
 		}
-		if ( is_numeric( $term ) ) {
-		
-			if (($search_by == 2) || ($search_by == 4)){
-				$products1 = array(
-					'post_type'                        => array ('product', 'product_variation'),
-					'post_status'                 => array('publish'),
-					'posts_per_page'         => $max_items,
-					'fields'                        => 'ids',
-					'post__not_in'			=> $excluded_products,
-					'post__in'			=> $included_products,
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'product_cat',
-							'field'    => 'id',
-							'terms'    => $category,
-						),
-					),
-				);
-				
-				$products2 = array(
-					'post_type'                        => array ('product', 'product_variation'),
-					'post_status'                 => array('publish'),
-					'posts_per_page'         => $max_items,
-					'post_parent'                 => $term,
-					'fields'                        => 'ids',
-					'post__not_in'			=> $excluded_products,
-					'post__in'			=> $included_products,
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'product_cat',
-							'field'    => 'id',
-							'terms'    => $category,
-						),
-					),
-				);
-			}
-			if (($search_by == 1) || ($search_by == 4)){
-				$products3 = array(
-					'post_type'                        => array ('product', 'product_variation'),
-					'post_status'                 => array('publish'),
-					'posts_per_page'         => $max_items,
-					'meta_query'                 => array(
-							array(
-							'key'         => '_sku',
-							'value' => $_REQUEST['term'],
-							'compare' => 'LIKE'
-							)
-					),
-					'fields'                        => 'ids',
-					'post__not_in'			=> $excluded_products,
-					'post__in'			=> $included_products,
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'product_cat',
-							'field'    => 'id',
-							'terms'    => $category,
-						),
-					),
-				);
-			}
-			if($search_by == 1) {
-				$products = array_unique(array_merge(get_posts( $products3 ) ));
-			} elseif ($search_by == 2){
-				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
-			} else {
-				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ) ));
-			}
-		} else {
-		
-			if (($search_by == 1) || ($search_by == 4)){
-				$products1 = array(
-						'post_type'                        => array ('product', 'product_variation'),
-						'post_status'                 => array('publish'),
-						'posts_per_page'         => $max_items,
-						'meta_query'                 => array(
-								array(
-								'key'         => '_sku',
-								'value' => $_REQUEST['term'],
-								'compare' => 'LIKE'
-								)
-						),
-						'fields'                        => 'ids',
-						'post__not_in'			=> $excluded_products,
+		if(!empty($category)){
+			if ( is_numeric( $term ) ) {
+			
+				if (($search_by == 2) || ($search_by == 4)){
+					$products1 = array(
+						'post_type'     	=> array ('product', 'product_variation'),
+						'post_status'     	=> array('publish'),
+						'posts_per_page'    => $max_items,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
 						'post__in'			=> $included_products,
 						'tax_query' => array(
 							array(
-								'taxonomy' => 'product_cat',
-								'field'    => 'id',
-								'terms'    => $category,
+								'taxonomy' 	=> 'product_cat',
+								'field'    	=> 'id',
+								'terms'    	=> $category,
 							),
 						),
 					);
-			}
-			if (($search_by == 3) || ($search_by == 4)){
-				$products2 = array(
-					'post_type' 			=> array ('product', 'product_variation'),
-					'post_status'         	=> array('publish'),
-					'posts_per_page'         => $max_items,
-					's'                 	=> $term,
-					'fields'                        => 'ids',
-					'post__not_in'			=> $excluded_products,
-					'post__in'			=> $included_products,
-					'tax_query' => array(
-						array(
-							'taxonomy' => 'product_cat',
-							'field'    => 'id',
-							'terms'    => $category,
+					
+					$products2 = array(
+						'post_type'        	=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						'post_parent'       => $term,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products,
+						'tax_query' => array(
+							array(
+								'taxonomy' 	=> 'product_cat',
+								'field'    	=> 'id',
+								'terms'    	=> $category,
+							),
 						),
-					),
-				);
-			}
-
-			if($search_by == 1) {
-				$products = array_unique(array_merge(get_posts( $products1 ) ));
-			} elseif($search_by == 3) {
-				$products = array_unique(array_merge(get_posts( $products2 ) ));
+					);
+				}
+				if (($search_by == 1) || ($search_by == 4)){
+					$products3 = array(
+						'post_type'       	=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						'meta_query' => array(
+							array(
+							'key'       	=> '_sku',
+							'value' 		=> $_REQUEST['term'],
+							'compare' 		=> 'LIKE'
+							)
+						),
+						'fields'         	=> 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products,
+						'tax_query' => array(
+							array(
+								'taxonomy' 	=> 'product_cat',
+								'field'    	=> 'id',
+								'terms'    	=> $category,
+							),
+						),
+					);
+				}
+				if($search_by == 1) {
+					$products = array_unique(array_merge(get_posts( $products3 ) ));
+				} elseif ($search_by == 2){
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+				} else {
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ) ));
+				}
 			} else {
-				$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+			
+				if (($search_by == 1) || ($search_by == 4)){
+					$products1 = array(
+						'post_type'       	=> array ('product', 'product_variation'),
+						'post_status'    	=> array('publish'),
+						'posts_per_page'    => $max_items,
+						'meta_query' => array(
+							array(
+							'key'         	=> '_sku',
+							'value' 		=> $_REQUEST['term'],
+							'compare' 		=> 'LIKE'
+							)
+						),
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products,
+						'tax_query' => array(
+							array(
+								'taxonomy' 	=> 'product_cat',
+								'field'    	=> 'id',
+								'terms'    	=> $category,
+							),
+						),
+					);
+				}
+				if (($search_by == 3) || ($search_by == 4)){
+					$products2 = array(
+						'post_type' 		=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						's'                 => $term,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products,
+						'tax_query' => array(
+							array(
+								'taxonomy' 	=> 'product_cat',
+								'field'    	=> 'id',
+								'terms'    	=> $category,
+							),
+						),
+					);
+				}
+
+				if($search_by == 1) {
+					$products = array_unique(array_merge(get_posts( $products1 ) ));
+				} elseif($search_by == 3) {
+					$products = array_unique(array_merge(get_posts( $products2 ) ));
+				} else {
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+				}
+			
 			}
-		
+		} else {
+			if ( is_numeric( $term ) ) {
+			
+				if (($search_by == 2) || ($search_by == 4)){
+					$products1 = array(
+						'post_type'     	=> array ('product', 'product_variation'),
+						'post_status'     	=> array('publish'),
+						'posts_per_page'    => $max_items,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products
+					);
+					
+					$products2 = array(
+						'post_type'        	=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						'post_parent'       => $term,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products
+					);
+				}
+				if (($search_by == 1) || ($search_by == 4)){
+					$products3 = array(
+						'post_type'       	=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						'meta_query' => array(
+							array(
+							'key'       	=> '_sku',
+							'value' 		=> $_REQUEST['term'],
+							'compare' 		=> 'LIKE'
+							)
+						),
+						'fields'         	=> 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products
+					);
+				}
+				if($search_by == 1) {
+					$products = array_unique(array_merge(get_posts( $products3 ) ));
+				} elseif ($search_by == 2){
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+				} else {
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ), get_posts( $products3 ) ));
+				}
+			} else {
+			
+				if (($search_by == 1) || ($search_by == 4)){
+					$products1 = array(
+						'post_type'       	=> array ('product', 'product_variation'),
+						'post_status'    	=> array('publish'),
+						'posts_per_page'    => $max_items,
+						'meta_query' => array(
+							array(
+							'key'         	=> '_sku',
+							'value' 		=> $_REQUEST['term'],
+							'compare' 		=> 'LIKE'
+							)
+						),
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products
+					);
+				}
+				if (($search_by == 3) || ($search_by == 4)){
+					$products2 = array(
+						'post_type' 		=> array ('product', 'product_variation'),
+						'post_status'       => array('publish'),
+						'posts_per_page'    => $max_items,
+						's'                 => $term,
+						'fields'            => 'ids',
+						'post__not_in'		=> $excluded_products,
+						'post__in'			=> $included_products
+					);
+				}
+
+				if($search_by == 1) {
+					$products = array_unique(array_merge(get_posts( $products1 ) ));
+				} elseif($search_by == 3) {
+					$products = array_unique(array_merge(get_posts( $products2 ) ));
+				} else {
+					$products = array_unique(array_merge( get_posts( $products1 ), get_posts( $products2 ) ));
+				}
+			
+			}
 		}
 		
 		// JSON encode and echo
@@ -435,6 +518,8 @@ HTML5;
 				} else {
 					$img = apply_filters( 'woocommerce_placeholder_img_src', WC_Bulk_Order_Form_Compatibility::WC()->plugin_url() . '/assets/images/placeholder.png' );
 				}
+			} else {
+				continue;
 			}
 
 			if(!empty($id)) {

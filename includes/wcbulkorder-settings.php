@@ -205,7 +205,7 @@ class WCBulkOrderForm_Settings {
 						<li>
 							<?php _e('Bulk Order Form Limit Products', 'wcbulkorderform')?>
 							<div class="more" style="display:none;">
-								<?php _e( 'Exclude or include specific products or variations with a simple checkbox.', 'wcbulkorderform' ); ?><br/>
+								<?php _e( 'Exclude or include specific products or variations with a simple checkbox, or by category.', 'wcbulkorderform' ); ?><br/>
 								<a href="https://wpovernight.com/downloads/bulk-order-form-limit-products/" target="_blank"><?php _e("Get Bulk Order Form Limit Products!", 'wcbulkorderform'); ?></a>
 							</div>
 						</li>

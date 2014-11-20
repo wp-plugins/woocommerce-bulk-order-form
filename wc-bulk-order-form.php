@@ -4,7 +4,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 2.0.1
+  Version: 2.0.2
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
