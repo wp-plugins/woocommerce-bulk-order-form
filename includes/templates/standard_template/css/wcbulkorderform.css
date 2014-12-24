@@ -25,3 +25,33 @@ i.bulkorder_spinner {
 ul.ui-autocomplete{
     z-index: 999999 !important;
 }
+td.wcbulkorderprice, th.wcbulkorderprice, td.wcbulkorderpricetotal, td.prepopulated-button {
+	text-align:center;
+	width: 20%;
+}
+td.wcbulkorderprice, td.wcbulkorderpricetotal{
+	color: green;
+}
+td.wcbulkorder-title, th.wcbulkorder-title{
+	width: 40%;
+}
+td.wcbulkorder-quantity, th.wcbulkorder-quantity, td.wcbulkorder-variation-title, th.wcbulkorder-variation-title{
+	width: 20%;
+}
+img.wcbulkorder-image-tag{
+	max-height: 40px;
+	margin-right:5px
+}
+input.wcbulkorderquantity{
+	width: 100%;
+}
+td.wcbulkorder-spacer{
+	width: 20%;
+}
+tr.wcbulkorderformtr input{
+	width: 100%;
+	box-sizing: border-box;
+}
+tr.wcbulkorderformtr td{
+	padding-right: 10px;
+}

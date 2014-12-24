@@ -5,7 +5,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		add_action( 'admin_init', array( &$this, 'init_settings' ) ); // Registers settings
 		add_action('wcbulkorderform_settings',array(&$this,'print_settings'));
 	}
-
 	/**
 	 * Print Settings
 	 */
@@ -15,12 +14,10 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		$option = get_option('wcbulkorderform_variation_template');
 		//print_r($option);
 	}
-
 	/**
 	 * User settings.
 	 */
 	public function init_settings() {
-
 		$option = 'wcbulkorderform_variation_template';
 	
 		// Create option in wp_options.
@@ -55,7 +52,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> '4'
 			)
 		);
-		
 		add_settings_field(
 			'search_format',
 			__( 'Choose your product search results format', 'wcbulkorderform' ),
@@ -76,7 +72,26 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> '2'
 			)
 		);
-
+		add_settings_field(
+			'variation_search_format',
+			__( 'Choose your product search results format', 'wcbulkorderform' ),
+			array( &$this, 'radio_element_callback' ),
+			$option,
+			'plugin_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'variation_search_format',
+				'options' 		=> array(
+					'1'			=> __( 'SKU - Title - Price' , 'wcbulkorderform' ),
+					'2'			=> __( 'Title - Price - SKU' , 'wcbulkorderform' ),
+					'3'			=> __( 'Title - Price' , 'wcbulkorderform' ),
+					'4'			=> __( 'Title - SKU' , 'wcbulkorderform' ),
+					'5'			=> __( 'Title' , 'wcbulkorderform' )
+				),
+				'disabled'		=> true,
+				'default'		=> '2'
+			)
+		);
 		add_settings_field(
 			'attribute_style',
 			__( 'Display attribute title or just attribute value? Ex. (Color: Red) or (Red)', 'wcbulkorderform' ),
@@ -111,7 +126,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> 'false'
 			)
 		);
-
 		add_settings_field(
 			'display_images',
 			__( 'Display product images in autocomplete search?', 'wcbulkorderform' ),
@@ -149,7 +163,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'bulkorder_row_number'
 			)
 		);
-
 		add_settings_field(
 			'max_items',
 			__( 'Maximum Items to Display in a Search', 'wcbulkorderform' ),
@@ -201,7 +214,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'variation_field_title'
 			)
 		);
-
 		add_settings_field(
 			'quantity_field_title',
 			__( 'Title for quantity fields', 'wcbulkorderform' ),
@@ -225,7 +237,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'price_field_title'
 			)
 		);
-
 		add_settings_field(
 			'no_load_css',
 			__( "Don't load jquery ui styles. (Don't check this unless you know your site is loading jquery ui styles from another source)", 'wcbulkorderform' ),
@@ -237,10 +248,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'no_load_css',
 			)
 		);
-
 		// Register settings.
 		register_setting( $option, $option, array( &$this, 'wcbulkorderform_options_validate' ) );
-
 		// Register defaults if settings empty (might not work in case there's only checkboxes and they're all disabled)
 		$option_values = get_option($option);
 		if ( empty( $option_values ) ) {
@@ -254,24 +263,24 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	public function default_settings() {
 		global $options;
 		$default = array(
-			'search_by'				=> '4',
-			'search_format'			=> '2',
-			'new_row_button'		=> 'false',
-			'bulkorder_row_number'	=> '5',
-			'max_items'				=> '20',
-			'display_price'			=> 'true',
-			'product_field_title'	=> 'Product',
-			'variation_field_title'	=> 'Variation',
-			'quantity_field_title'	=> 'Quantity',
-			'price_field_title'		=> 'Price',
-			'no_load_css'			=> '',
-			'display_images'		=> 'false',
-			'attribute_style'		=> 'true'
+			'search_by'					=> '4',
+			'search_format'				=> '2',
+			'variation_search_format'	=> '2',
+			'new_row_button'			=> 'false',
+			'bulkorder_row_number'		=> '5',
+			'max_items'					=> '20',
+			'display_price'				=> 'true',
+			'product_field_title'		=> 'Product',
+			'variation_field_title'		=> 'Variation',
+			'quantity_field_title'		=> 'Quantity',
+			'price_field_title'			=> 'Price',
+			'no_load_css'				=> '',
+			'display_images'			=> 'false',
+			'attribute_style'			=> 'true'
 		);
 		
 		update_option( 'wcbulkorderform_variation_template', $default );
 	}
-
 	/**
 	 * Text field callback.
 	 *
@@ -291,7 +300,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$disabled = (isset( $args['disabled'] )) ? ' disabled' : '';
 		$html = sprintf( '<input type="text" id="%1$s" name="%2$s[%1$s]" value="%3$s" size="%4$s"%5$s/>', $id, $menu, $current, $size, $disabled );
 	
@@ -319,7 +327,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$disabled = (isset( $args['disabled'] )) ? ' disabled' : '';
 		
 		$html = sprintf( '<select name="%1$s[%2$s]" id="%1$s[%2$s]"%3$s>', $menu, $id, $disabled );
@@ -329,14 +336,12 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			$html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $current, $key, false ), $label );
 		}
 		$html .= sprintf( '</select>' );
-
 		if ( isset( $args['description'] ) ) {
 			$html .= sprintf( '<p class="description">%s</p>', $args['description'] );
 		}
 		
 		echo $html;
 	}
-
 	/**
 	 * Displays a multiple selectbox for a settings field
 	 *
@@ -374,7 +379,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		
 		echo $html;
 	}
-
 	/**
 	 * Checkbox field callback.
 	 *
@@ -404,7 +408,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	
 		echo $html;
 	}
-
 	/**
 	 * Displays a multicheckbox a settings field
 	 *
@@ -421,7 +424,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$html = '';
 		$class = 'radio';
 		if (isset( $args['disabled'] )) {
@@ -436,16 +438,13 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		if ( isset( $args['description'] ) ) {
 			$html .= sprintf( '<p class="description">%s</p>', $args['description'] );
 		}
-
 		if (isset( $args['disabled'] )) {
 			$html .= ' <span style="display:none;" class="pro-feature"><i>'. __('This feature only available in', 'wcbulkorderform') .' <a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/?utm_source=wordpress&utm_medium=wcbulkorderformfree&utm_campaign=bulkorderformfree">Bulk Order Form Pro</a></i></span>';
 			$html .= '<div style="position:absolute; left:0; right:0; top:0; bottom:0; background-color:white; -moz-opacity: 0; opacity:0;filter: alpha(opacity=0);" class="hidden-input"></div>';
 			$html = '<div style="display:inline-block; position:relative;">'.$html.'</div>';
 		}
-
 		echo $html;
 	}
-
 	/**
 	 * Displays a multicheckbox a settings field
 	 *
@@ -462,7 +461,6 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$icons = '';
 		$radios = '';
 		
@@ -470,13 +468,11 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			$icons .= sprintf( '<td style="padding-bottom:0;font-size:16pt;" align="center"><label for="%1$s[%2$s][%3$s]"><i class="wcbulkorderform-icon-shopping-cart-%4$s"></i></label></td>', $menu, $id, $key, $iconnumber);
 			$radios .= sprintf( '<td style="padding-top:0" align="center"><input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s /></td>', $menu, $id, $key, checked( $current, $key, false ) );
 		}
-
 		$html = '<table><tr>'.$icons.'</tr><tr>'.$radios.'</tr></table>';
 		$html .= '<p class="description"><i>'. __('<strong>Please note:</strong> you need to open your website in a new tab/browser window after updating the cart icon for the change to be visible!','wcbulkorderform').'</p>';
 		
 		echo $html;
 	}
-
 	/**
 	 * Section null callback.
 	 *
@@ -485,27 +481,21 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	public function section_options_callback() {
 	
 	}
-
 	/**
 	 * Validate/sanitize options input
 	 */
 	public function wcbulkorderform_options_validate( $input ) {
 		// Create our array for storing the validated options.
 		$output = array();
-
 		// Loop through each of the incoming options.
 		foreach ( $input as $key => $value ) {
-
 			// Check to see if the current option has a value. If so, process it.
 			if ( isset( $input[$key] ) ) {
-
 				// Strip all HTML and PHP tags and properly handle quoted strings.
 				$output[$key] = strip_tags( stripslashes( $input[$key] ) );
 			}
 		}
-
 		// Return the array processing any additional functions filtered by this action.
 		return apply_filters( 'wcbulkorderform_validate_input', $output, $input );
 	}
-
 }

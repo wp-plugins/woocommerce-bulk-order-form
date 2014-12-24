@@ -3,8 +3,8 @@ Contributors: jprummer
 Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
 Requires at least: 3.4
-Tested up to: 4.0
-Stable tag: 2.0.2
+Tested up to: 4.1
+Stable tag: 2.1
 
 Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
@@ -53,6 +53,18 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 2.1 =
+
+* New: Variation label display now has its own option
+* New: Support Tab to more easily locate support
+* Tweak: Use product thumbnail images for faster loading
+* Tweak: Improved price fetching to include sale and dynamic pricing
+* Tweak: Replaced inline styles with styles in wcbulkorder.css. Can be overridden from theme directory.
+* Tweak: Changed price to autochange when new product is selected.
+* Fix: Issue with price displaying as NaN
+* Fix: Invalid argument error on activation
+* Fix: Missing spinner on 'add row' in variation template
 
 = 2.0.2 =
 
@@ -150,6 +162,18 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 Initial Release
 
 == Upgrade Notice ==
+
+= 2.1 =
+
+* New: Variation label display now has its own option
+* New: Support Tab to more easily locate support
+* Tweak: Use product thumbnail images for faster loading
+* Tweak: Improved price fetching to include sale and dynamic pricing
+* Tweak: Replaced inline styles with styles in wcbulkorder.css. Can be overridden from theme directory.
+* Tweak: Changed price to autochange when new product is selected.
+* Fix: Issue with price displaying as NaN
+* Fix: Invalid argument error on activation
+* Fix: Missing spinner on 'add row' in variation template
 
 = 2.0.2 =
 

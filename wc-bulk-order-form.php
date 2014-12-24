@@ -1,20 +1,17 @@
 <?php
-
 /*
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 2.0.2
+  Version: 2.1
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
  */
 /*  Copyright 2014 Jeremiah Prummer (email : jeremiah@wpovernight.com)
-
   This program is free software; you can redistribute it and/or modify
   it under the terms of the GNU General Public License, version 2, as
   published by the Free Software Foundation.
-
   This program is distributed in the hope that it will be useful,
   but WITHOUT ANY WARRANTY; without even the implied warranty of
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,9 +19,7 @@
  */
 ?>
 <?php
-
 class WCBulkOrderForm {
-
 	private static $add_script;
 	/**
 	 * Construct.
@@ -40,14 +35,11 @@ class WCBulkOrderForm {
 		}
 		register_activation_hook( __FILE__, array( $this, 'register_templates' ) );
 		register_activation_hook( __FILE__, array( $this, 'register_default_template' ) );
-
 		add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 ); // or use init?
 	}
-
 	function delete_old_options(){
 		delete_option( 'wcbulkorderform' );
 	}
-
 	/**
 	 * Load additional classes and functions
 	 */
@@ -74,7 +66,6 @@ class WCBulkOrderForm {
 	public function languages() {
 		load_plugin_textdomain( 'wcbulkorderform', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
-
 	/**
 	 * Register Standard Templates
 	 */
@@ -92,12 +83,9 @@ class WCBulkOrderForm {
 		}
 		update_option('wcbulkorderform_sections',$sections);
 	}
-
 	function register_default_template(){
 		include_once( 'includes/templates/standard_template/standard_template.php' );
 		$WCBulkOrderForm_Standard_Template = new WCBulkOrderForm_Standard_Template();
 	}
-
 }
-
 $WCBulkOrderForm = new WCBulkOrderForm();

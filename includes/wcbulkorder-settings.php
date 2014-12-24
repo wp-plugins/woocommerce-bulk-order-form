@@ -49,11 +49,14 @@ class WCBulkOrderForm_Settings {
 	}
 
 	function template_types(){
+		$sections = array();
 		$sections = get_option('wcbulkorderform_sections');
 		$sections = $sections['templates'];
 		$templates = array();
-		foreach ($sections as $template){
-			$templates[$template] = $template. __( ' Template' , 'wcbulkorderform' );
+		if(!empty($sections)){
+			foreach ($sections as $template){
+				$templates[$template] = $template. __( ' Template' , 'wcbulkorderform' );
+			}
 		}
 		return $templates;
 	}
@@ -135,6 +138,7 @@ class WCBulkOrderForm_Settings {
 	        <h2 class="nav-tab-wrapper">
 	            <a href="?page=wcbulkorderform_options_page&tab=template_selection" class="nav-tab <?php echo $active_tab == 'template_selection' ? 'nav-tab-active' : ''; ?>">Template Selection</a>  
 	            <a href="?page=wcbulkorderform_options_page&tab=template_settings" class="nav-tab <?php echo $active_tab == 'template_settings' ? 'nav-tab-active' : ''; ?>">Template Settings</a>
+	            <a href="?page=wcbulkorderform_options_page&tab=support" class="nav-tab <?php echo $active_tab == 'support' ? 'nav-tab-active' : ''; ?>">Help</a>
 	        </h2>
 			<?php
 			} else {
@@ -142,6 +146,7 @@ class WCBulkOrderForm_Settings {
 			<h2 class="nav-tab-wrapper">
 	            <a href="?page=wcbulkorderform_options_page&tab=template_selection" class="nav-tab <?php echo $active_tab == 'template_selection' ? 'nav-tab-active' : ''; ?>">Template Selection</a>  
 	            <a href="?page=wcbulkorderform_options_page&tab=template_settings" class="nav-tab <?php echo $active_tab == 'template_settings' ? 'nav-tab-active' : ''; ?>">Template Settings</a>
+	        	<a href="?page=wcbulkorderform_options_page&tab=support" class="nav-tab <?php echo $active_tab == 'support' ? 'nav-tab-active' : ''; ?>">Help</a>
 	        </h2>
 			<?php }
 				global $options;
@@ -156,9 +161,21 @@ class WCBulkOrderForm_Settings {
 						settings_fields( 'wcbulkorderform' );
 						do_settings_sections( 'wcbulkorderform' );
 						submit_button('Save Template Selection');
-			        } else {
+			        } elseif ($active_tab == 'template_settings'){
 			            do_action('wcbulkorderform_settings');
 			            submit_button();
+			        } else {
+			        	?>
+			        		<div style="margin-top:20px;margin-bottom:40px">
+				        		<h2>Looking for help?</h2>
+								<p>Here is how to find it:</p>
+								<ol>
+									<li><a href="https://wpovernight.com/2014/11/woocommerce-bulk-order-form-2-0-update/">Read the documentation</a> for the bulk order form plugin. It should answer most of your questions and may show you some other cool things you didn't know about the Bulk Order Form Plugin.</li>
+									<li>Look for the answer to your question in the <a href="https://wpovernight.com/faq-category/bulk-order-form/">FAQs at WP Overnight</a>.</li>
+									<li>Email support@wpovernight.com and we'll answer your question as quickly as possible.</li>
+								</ol>
+							</div>
+			        	<?php
 			        }
 				?>
 

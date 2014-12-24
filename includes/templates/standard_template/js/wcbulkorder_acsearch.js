@@ -1,18 +1,18 @@
 jQuery(document).ready(function ($){
 	
-	var acs_action = 'myprefix_autocompletesearch';
+	var product_search = 'bulk_order_product_search';
 	//WCBulkOrder.aftertypequantity
 	//WCBulkOrder.nodatafound
 	//WCBulkOrder.noproductselected
 	//WCBulkOrder.beforetypelabel
 	//WCBulkOrder.beforetypequanity
-	WCBulkOrder.category = $('#BulkOrderForm').attr('category');
 	WCBulkOrder.included = $('#BulkOrderForm').attr('included');
 	WCBulkOrder.excluded = $('#BulkOrderForm').attr('excluded');
+	WCBulkOrder.category = $('#BulkOrderForm').attr('category');
 	function autocomplete() {
 		$("input.wcbulkorderproduct").autocomplete({
 			source: function(req, response){
-				$.getJSON(WCBulkOrder.url+'?callback=?&action='+acs_action+'&category='+WCBulkOrder.category+'&included='+WCBulkOrder.included+'&excluded='+WCBulkOrder.excluded+'&_wpnonce='+WCBulkOrder.search_products_nonce, req, response);
+				$.getJSON(WCBulkOrder.url+'?callback=?&action='+product_search+'&category='+WCBulkOrder.category+'&included='+WCBulkOrder.included+'&excluded='+WCBulkOrder.excluded+'&_wpnonce='+WCBulkOrder.search_products_nonce, req, response);
 			},
 			select: function(event, ui) {
 				
@@ -20,26 +20,39 @@ jQuery(document).ready(function ($){
 				var $quantityInput = ($input).parent().siblings().find(".wcbulkorderquantity");
 				var $displayPrice = $('.wcbulkorderprice', $input.parent().parent());
 				var $ProdID = $('.wcbulkorderid', $input.parent().parent());
-				$quantityInput.attr("placeholder", "Enter Quantity");
+				$quantityInput.attr("placeholder", WCBulkOrder.enterquantity);
 				$ProdID.val(ui.item.id);
+				var $price = ui.item.price.replace(/[^\d.]/g,"");
+				var initial = 0;
+				$displayPrice.html('<span class="amount">'+ui.item.price+'</span>');
+				$displayPrice.find('span').text(ui.item.price.replace($price,initial.toFixed(2)));
 				$quantityInput.off('keyup').on('keyup', function() {
-					window.symbol = ui.item.symbol;
+					$this = $(this);
 					if ($quantityInput.val() > 0) {
-						var total = parseInt($quantityInput.val()) * ui.item.price;
+						var total = parseInt($quantityInput.val()) * $price;
 					}
 					else {
 						var total = 0;
 					}
-					$displayPrice.html(symbol + '<span>'+total.toFixed(2)+'</span>');
-					$('.wcbulkorderpricetotal').html(symbol + "0.00");
+					$displayPrice.find('span').text(ui.item.price.replace($price,total.toFixed(2)));
 					calculateTotal();
-					
 				});
+				$input.on('autocompletechange change', function () {
+			    	$this = $(this);
+					if ($quantityInput.val() > 0) {
+						var total = parseInt($quantityInput.val()) * $price;
+					}
+					else {
+						var total = 0;
+					}
+					$displayPrice.find('span').text(ui.item.price.replace($price,total.toFixed(2)));
+					calculateTotal();
+			    }).change();
 			},
 			minLength: 2,
 			delay: 500,
 			search: function(event, ui) {
-				var $input = $(this);
+		       	var $input = $(this);
 				var $spinner = $('.bulkorder_spinner', $input.parent());
 		       	$spinner.show();
 		   	},
@@ -51,17 +64,17 @@ jQuery(document).ready(function ($){
 					var $quantityInput = ($input).parent().siblings().find(".wcbulkorderquantity");
 					var $displayPrice = $('.wcbulkorderprice', $input.parent().parent());
 					$input.val("");
-					$input.attr("placeholder", "No Products Found");
+					$input.attr("placeholder", WCBulkOrder.noproductsfound);
 					$displayPrice.html("");
 					$quantityInput.val("");
 					calculateTotal();
-				}
+				}				
 			},
 			change: function (ev, ui) {
                 if (!ui.item) {			
                     $(this).val("");
-					$(this).attr("placeholder", "Please Select a Product");
-				}	
+					$(this).attr("placeholder", WCBulkOrder.selectaproduct);
+				}
             }
 		}).each(function(){
 			if (WCBulkOrder.display_images === 'true') {
@@ -73,30 +86,33 @@ jQuery(document).ready(function ($){
 			} else {
 				return;
 			}
+		}).click(function () {
+		    $(this).autocomplete('search', '');
 		});
 	}
-	
 	function calculateTotal() {
 		var sum = 0;
-		$(".wcbulkorderprice span").each(function() {
-			var $item = +$(this).text();
-			if( $item > 0) {
-				sum += $item;
-				$('.wcbulkorderpricetotal').html(window.symbol + sum.toFixed(2));
+		var $priceInput = $this.parent().parent().find(".wcbulkorderprice");
+		$(".wcbulkorderprice span.amount").each(function() {
+			var $val = $(this).text().replace(/[^\d.]/g,"");
+			if( $val > 0) {
+				sum = sum + parseFloat($val);
+				$price = $priceInput.find('span').text().replace(/[^\d.]/g,"");
+				$prices = $priceInput.find('span').text();
+				$this.parents().eq(4).find('.wcbulkorderpricetotal').text($prices.replace($price,sum.toFixed(2)));
 			}
-		});	
+		});
 	}
-
-	$("input.wcbulkorderproduct").click(autocomplete);
+	$("input.wcbulkorderproduct").click(autocomplete());
 	$("button.wcbulkordernewrow").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
 		autocomplete();
 		return false;
 	});
 	$("button.wcbulkordernewrowprice").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td style="width: 60%"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%"></td><td style="width: 20%"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%"></td><td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value=""></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><td class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
 		autocomplete();
 		return false;
 	});

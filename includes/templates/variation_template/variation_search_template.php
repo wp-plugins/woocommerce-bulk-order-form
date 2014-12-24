@@ -4,15 +4,12 @@
  */
 ?>
 <?php
-
 class WCBulkOrderForm_Variation_Template{
-
 	private static $add_script;
 	/**
 	 * Construct.
 	 */
 	public function __construct() {
-
 		$this->includes();
 		$this->options = get_option('wcbulkorderform_variation_template');
 		//print_r($this->options);
@@ -51,7 +48,6 @@ class WCBulkOrderForm_Variation_Template{
 			$autocomplete = file_exists( get_stylesheet_directory() . '/jquery-ui.css' )
 			? get_stylesheet_directory_uri() . '/jquery-ui.css'
 			: plugins_url( '/css/jquery-ui.css', __FILE__ );
-
 			wp_register_style( 'wcbulkorder-jquery-ui', $autocomplete, array(), '', 'all' );
 		}
 		
@@ -81,16 +77,13 @@ class WCBulkOrderForm_Variation_Template{
 		$enterquantity = __( 'Enter Quantity', 'wcbulkorderform' );
 		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound));
 	}
-
 	static function print_script() {
 		if ( ! self::$add_script )
 			return;
-
 		wp_print_scripts('wcbulkorder_acsearch');
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		wp_enqueue_style( 'wcbulkorderform' );
 	}
-
 	function process_bulk_order_form() {
         $prod_name = '';
 		if(isset($_POST['submit'])) {
@@ -105,7 +98,6 @@ class WCBulkOrderForm_Variation_Template{
 				$product_id = $value;
 				$variation_id = '';
 				$attributes = '';
-
 				if ( 'product_variation' == get_post_type( $product_id ) ) {
                     $variation_id = $product_id;
                     $product_id = wp_get_post_parent_id( $variation_id );
@@ -152,7 +144,6 @@ class WCBulkOrderForm_Variation_Template{
 		$i = 0;
 		$html = '';
 		$cart_url = $woocommerce->cart->get_cart_url();
-
 		if (!empty($_POST['wcbulkorderid'])) {
 			$quantity_check = array_filter($_POST['wcbulkorderquantity']);
 			if (empty($quantity_check)){
@@ -183,39 +174,36 @@ class WCBulkOrderForm_Variation_Template{
 			}
 			wc_print_notices();
 		}
-
 		$html = <<<HTML
-
 		<form action="" method="post" id="BulkOrderForm" category="$category" included="$include" excluded="$exclude">
 		<table class="wcbulkorderformtable">
 			<tbody class="wcbulkorderformtbody">
 				<tr>
-					<th style="width: 40%">$product_label</th>
-					<th style="width: 20%">$variation_label</th>
-					<th style="width: 20%">$quantity_label</th>
+					<th class="wcbulkorder-title">$product_label</th>
+					<th class="wcbulkorder-variation-title">$variation_label</th>
+					<th class="wcbulkorder-quantity">$quantity_label</th>
 HTML;
 					if ($price == 'true'){
-						$html .= '<th style="width: 20%;text-align:center">'.$price_label.'</th>';
+						$html .= '<th class="wcbulkorderprice">'.$price_label.'</th>';
 					}
 				$html .= '</tr>';
-
 			while($i < $rows) {
 				++$i;
 				$html .= <<<HTML2
 				<tr class="wcbulkorderformtr">
-					<td style="width: 40%">
+					<td class="wcbulkorder-title">
 						<i class="bulkorder_spinner"></i>
-						<input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" style="width: 100%" />
+						<input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" />
 					</td>
-					<td style="width: 20%">
+					<td class="wcbulkorder-variation-title">
 						<i class="bulkorder_spinner"></i>
-						<input type="text" name="wcbulkordervariation[]" class="wcbulkordervariation" style="width: 100%" />
+						<input type="text" name="wcbulkordervariation[]" class="wcbulkordervariation" />
 					</td>
-					<td style="width: 20%">
-						<input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" style="width: 100%" />
+					<td class="wcbulkorder-quantity">
+						<input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" />
 					</td>
 					<?php if ($price == 'true'){ ?>
-					<td style="width: 20%;text-align:center;color: green" class="wcbulkorderprice"></td>
+					<td class="wcbulkorderprice"></td>
 					<?php } ?>	
 					<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />
 				</tr>
@@ -230,23 +218,23 @@ HTML3;
 				if ($price == 'true'){
 				$html .= <<<HTML4
 				<tr class="wcbulkorderformtr">
-					<td style="width: 60%">
-						
-					</td>
-					<td style="width: 20%">
+					<td class="wcbulkorder-title"></td>
+					<td class="wcbulkorder-quantity"></td>
+					<td class="wcbulkorder-quantity">
 HTML4;
 						$html .= __( 'Total Price:' , 'wcbulkorderform' );
 					$html .= <<<HTML6
 					</td>
 					
-					<td style="width: 20%;text-align:center;color: green" class="wcbulkorderpricetotal"></td>
+					<td class="wcbulkorderpricetotal"></td>
 					
 				</tr>
 HTML6;
 				}
 				$html .= '<tr>';
-					$html .= '<td style="width: 60%"></td>';
-					$html .='<td style="width: 20%">';
+					$html .= '<td class="wcbulkorder-title"></td>';
+					$html .= '<td class="wcbulkorder-quantity"></td>';
+					$html .='<td class="wcbulkorder-quantity">';
 						if (($add_rows == 'true') && ($price == 'true')){
 						$html .='<button class="wcbulkordernewrowprice">'.__( 'Add Row' , 'wcbulkorderform' ).'</button>';
 						}
@@ -255,7 +243,7 @@ HTML6;
 						}
 					
 					$html .='</td>';
-					$html .='<td style="width: 20%"><input type="submit" value="'.__( 'Add To Cart' , 'wcbulkorderform' ).'" name="submit" class="add_to_cart_button single_add_to_cart_button" /></td>';
+					$html .='<td class="wcbulkorder-quantity"><input type="submit" value="'.__( 'Add To Cart' , 'wcbulkorderform' ).'" name="submit" class="add_to_cart_button single_add_to_cart_button" /></td>';
 					$html .= <<<HTML5
 				</tr>
 			</tbody>
@@ -265,10 +253,8 @@ HTML5;
 		return $html;
 		
 	}
-
 	function bulk_order_product_search(){
 		// Query for suggestions
-
 		$term = $_REQUEST['term'];
 		$category = !empty($_REQUEST['category']) ? explode(',', $_REQUEST['category']) : array();
 		$excluded_products = !empty($_REQUEST['excluded']) ? explode(',', $_REQUEST['excluded']) : array();
@@ -392,7 +378,6 @@ HTML5;
 						),
 					);
 				}
-
 				if($search_by == 1) {
 					$products = array_unique(array_merge(get_posts( $products1 ) ));
 				} elseif($search_by == 3) {
@@ -479,7 +464,6 @@ HTML5;
 						'post__in'			=> $included_products
 					);
 				}
-
 				if($search_by == 1) {
 					$products = array_unique(array_merge(get_posts( $products1 ) ));
 				} elseif($search_by == 3) {
@@ -498,7 +482,6 @@ HTML5;
 		$suggestions = '';
 		
 		foreach ($products as $prod){	
-
 			$post_type = get_post_type($prod);
 			if ( 'product' == $post_type ) {
 				$product = get_product($prod);
@@ -508,56 +491,63 @@ HTML5;
 				}
 				$id = $product->id;
 				$price = number_format((float)$product->get_price(), 2, '.', '');
+				$price_html = $product->get_price_html();
+                if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
+				    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
+				    $price_html = $matches[1];
+				}
+				$price_html = strip_tags($price_html);
+				$price = $price_html;
 				$sku = $product->get_sku();
 				$title = get_the_title($product->id);
 				$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
-				$post_thumbnail_id = get_post_thumbnail_id($id);
-				$img = wp_get_attachment_url( $post_thumbnail_id );
+				$img = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'thumbnail');
+        		$img = $img[0];
 				if (!empty($img)) {
-					$img = wp_get_attachment_url( $post_thumbnail_id );
+					$img = $img;
 				} else {
 					$img = apply_filters( 'woocommerce_placeholder_img_src', WC_Bulk_Order_Form_Compatibility::WC()->plugin_url() . '/assets/images/placeholder.png' );
 				}
 			} else {
 				continue;
 			}
-
 			if(!empty($id)) {
 				$symbol = get_woocommerce_currency_symbol();
 				$symbol = html_entity_decode($symbol, ENT_COMPAT, 'UTF-8');
+				$price = html_entity_decode($price, ENT_COMPAT, 'UTF-8');
 				// Initialise suggestion array
 				$suggestion = array();
 				$switch_data = isset($this->options['search_format']) ? $this->options['search_format'] : '1';
 				$price = apply_filters('wc_bulk_order_form_price' , $price, $product);
-					switch ($switch_data) {
-						case 1:
-							if (!empty($sku)) {
-								$label = $sku.' - '.$title. ' - '.$symbol.$price;
-							} else {
-								$label = $title. ' - '.$symbol.$price;
-							}
-							break;
-						case 2:
-							if (!empty($sku)) {
-								$label = $title. ' - '.$symbol.$price.' - '.$sku;
-							} else {
-								$label = $title. ' - '.$symbol.$price;
-							}
-							break;
-						case 3:
-							$label = $title .' - '.$symbol.$price;
-							break;
-						case 4:
-							if (!empty($sku)) {
-								$label = $title. ' - '.$sku;
-							} else {
-								$label = $title;
-							}
-							break;
-						case 5:
+				switch ($switch_data) {
+					case 1:
+						if (!empty($sku)) {
+							$label = $sku.' - '.$title. ' - '.$price;
+						} else {
+							$label = $title. ' - '.$price;
+						}
+						break;
+					case 2:
+						if (!empty($sku)) {
+							$label = $title. ' - '.$price.' - '.$sku;
+						} else {
+							$label = $title. ' - '.$price;
+						}
+						break;
+					case 3:
+						$label = $title .' - '.$price;
+						break;
+					case 4:
+						if (!empty($sku)) {
+							$label = $title. ' - '.$sku;
+						} else {
 							$label = $title;
-							break;
-					}
+						}
+						break;
+					case 5:
+						$label = $title;
+						break;
+				}
 				$suggestion['label'] = apply_filters('wc_bulk_order_form_label', $label, $price, $title, $sku, $symbol);
 				$suggestion['price'] = apply_filters('wc_bulk_order_form_price' , $price, $product);
 				$suggestion['symbol'] = $symbol;
@@ -567,33 +557,30 @@ HTML5;
 				if (!empty($variation_id)) {
 					$suggestion['variation_id'] = $variation_id;
 				}
-
 				// Add suggestion to suggestions array
 				$suggestions[]= $suggestion;
 			}
 		}
-
 		// JSON encode and echo
 		$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
 		//print_r($response);
 		echo $response;
 		//echo 'var WCBulkOrder.product_has_variation = '.$this->product_has_variation.';';
-
 		// Don't forget to exit!
 		exit;
 	}
 	
 		function bulk_order_variation_search(){
 		// Query for suggestions
-
 		$term = $_REQUEST['term'];
 		$excluded_products = array();
 		$excluded_products = apply_filters('wc_bulk_order_excluded_products', $excluded_products);
 		$included_products = array();
 		$included_products = apply_filters('wc_bulk_order_included_products', $included_products);
 		if (empty($term)) die();
+		//echo $term;
 		$products1 = array(
-			'post_type'			=> array ('product_variation'),
+			'post_type'			=> array('product_variation'),
 			'post_status'       => array('publish'),
 			'post_parent'       => $term,
 			'fields'            => 'ids',
@@ -601,6 +588,7 @@ HTML5;
 			'post__in'			=> $included_products
 		);
 		$products = get_posts( $products1 );
+		//print_r($products);
 		
 		// JSON encode and echo
 		// Initialise suggestions array
@@ -609,7 +597,6 @@ HTML5;
 		$suggestions = '';
 		
 		foreach ($products as $prod){	
-
 			$post_type = get_post_type($prod);
 						
 			if ( 'product_variation' == $post_type ) {
@@ -617,6 +604,13 @@ HTML5;
                     $parent = get_product($prod);
                     $id = $product->variation_id;
                     $price = number_format((float)$product->price, 2, '.', '');
+                    $price_html = $product->get_price_html();
+                    if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
+					    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
+					    $price_html = $matches[1];
+					}
+					$price_html = strip_tags($price_html);
+					$price = $price_html;
                     $price = apply_filters('wc_bulk_order_form_price' , $price, $product);
                     $sku = $product->get_sku();
                     $title = '';
@@ -650,14 +644,14 @@ HTML5;
 							}
 						$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
                     }
-    				$post_thumbnail_id = get_post_thumbnail_id($id);
-					$parent_thumbnail_id = get_post_thumbnail_id($parent->id);
-					$parent_image = wp_get_attachment_url( $parent_thumbnail_id );
-					$img = wp_get_attachment_url( $post_thumbnail_id );
+    				$parent_image = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'thumbnail');
+        			$parent_image = $parent_image[0];
+        			$img = wp_get_attachment_image_src( get_post_thumbnail_id( $parent->id ), 'thumbnail');
+        			$img = $img[0];
 					if (!empty($img)) {
-						$img = wp_get_attachment_url( $post_thumbnail_id );
+						$img = $img;
 					} elseif (!empty($parent_image)) {
-						$img = wp_get_attachment_url( $parent_thumbnail_id );
+						$img = $parent_image;
 					} else {
 						$img = apply_filters( 'woocommerce_placeholder_img_src', WC_Bulk_Order_Form_Compatibility::WC()->plugin_url() . '/assets/images/placeholder.png' );
 					}
@@ -665,9 +659,40 @@ HTML5;
 			if(!empty($id)) {	
 				$symbol = get_woocommerce_currency_symbol();
 				$symbol = html_entity_decode($symbol, ENT_COMPAT, 'UTF-8');
+				$price = html_entity_decode($price, ENT_COMPAT, 'UTF-8');
 				// Initialise suggestion array
 				$suggestion = array();
-				$suggestion['label'] = $title .' - '.$symbol.$price;
+				$variation_switch_data = isset($this->options['variation_search_format']) ? $this->options['variation_search_format'] : '1';
+				switch ($variation_switch_data) {
+					case 1:
+						if (!empty($sku)) {
+							$label = $sku.' - '.$title. ' - '.$price;
+						} else {
+							$label = $title. ' - '.$price;
+						}
+						break;
+					case 2:
+						if (!empty($sku)) {
+							$label = $title. ' - '.$price.' - '.$sku;
+						} else {
+							$label = $title. ' - '.$price;
+						}
+						break;
+					case 3:
+						$label = $title .' - '.$price;
+						break;
+					case 4:
+						if (!empty($sku)) {
+							$label = $title. ' - '.$sku;
+						} else {
+							$label = $title;
+						}
+						break;
+					case 5:
+						$label = $title;
+						break;
+				}
+				$suggestion['label'] = $label;
 				$suggestion['price'] = $price;
 				$suggestion['symbol'] = $symbol;
 				$suggestion['id'] = $id;
@@ -675,17 +700,14 @@ HTML5;
 				if (!empty($variation_id)) {
 					$suggestion['variation_id'] = $variation_id;
 				}
-
 				// Add suggestion to suggestions array
 				$suggestions[]= $suggestion;
 			}
 		}
-
 		// JSON encode and echo
 		$response = $_GET["callback"] . "(" . json_encode($suggestions) . ")";
 		//print_r($response);
 		echo $response;
-
 		// Don't forget to exit!
 		exit;
 	}
@@ -695,7 +717,6 @@ class Register_Variation_Template {
 	public function __construct() {
 		register_activation_hook( __FILE__, array(&$this,'default_settings'));
 	}
-
 	public function default_settings() {
 		global $options;
 		$sections = get_option('wcbulkorderform_sections');
