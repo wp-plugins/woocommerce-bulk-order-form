@@ -4,7 +4,7 @@ Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
 Requires at least: 3.4
 Tested up to: 4.1
-Stable tag: 2.1
+Stable tag: 2.1.1
 
 Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
