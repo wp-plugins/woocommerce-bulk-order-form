@@ -66,7 +66,12 @@ class WCBulkOrderForm_Standard_Template {
 		$variation_noproductsfound = __( 'No Variations', 'wcbulkorderform' );
 		$selectaproduct = __( 'Please Select a Product', 'wcbulkorderform' );
 		$enterquantity = __( 'Enter Quantity', 'wcbulkorderform' );
-		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound));
+		$decimal_sep = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_decimal_sep' ) ), ENT_QUOTES );
+		$thousands_sep = wp_specialchars_decode( stripslashes( get_option( 'woocommerce_price_thousand_sep' ) ), ENT_QUOTES );
+		$num_decimals = absint( get_option( 'woocommerce_price_num_decimals' ) );
+		$minLength = 2;
+		$Delay = 500;
+		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound, 'decimal_sep' => $decimal_sep, 'thousands_sep' => $thousands_sep, 'num_decimals' => $num_decimals, 'Delay' => $Delay, 'minLength' => $minLength ));
 	}
 	static function print_script() {
 		if ( ! self::$add_script )
@@ -250,8 +255,6 @@ HTML5;
 						'posts_per_page'    => $max_items,
 						'post__in'          => array(0, $term),
 						'fields'            => 'ids',
-						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products,
 						'tax_query' 		=> array(
 							array(
 								'taxonomy' 	=> 'product_cat',
@@ -267,8 +270,6 @@ HTML5;
 						'posts_per_page'    => $max_items,
 						'post_parent'       => $term,
 						'fields'            => 'ids',
-						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products,
 						'tax_query' => array(
 							array(
 								'taxonomy' 	=> 'product_cat',
@@ -387,14 +388,13 @@ HTML5;
 			if ( is_numeric( $term ) ) {
 			
 				if (($search_by == 2) || ($search_by == 4)){
+					
 					$products1 = array(
 						'post_type'         => array ('product', 'product_variation'),
 						'post_status'       => array('publish'),
 						'posts_per_page'    => $max_items,
 						'post__in'          => array(0, $term),
-						'fields'            => 'ids',
-						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'fields'            => 'ids'
 					);
 					
 					$products2 = array(
@@ -402,9 +402,7 @@ HTML5;
 						'post_status'       => array('publish'),
 						'posts_per_page'    => $max_items,
 						'post_parent'       => $term,
-						'fields'            => 'ids',
-						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'fields'            => 'ids'
 					);
 				}
 				if (($search_by == 3) || ($search_by == 4)){
@@ -424,11 +422,9 @@ HTML5;
 						'post_status' 		=> array('publish'),
 						'posts_per_page'    => $max_items,
 						'meta_query'        => array(
-							array(
 							'key'	 		=> '_sku',
 							'value' 		=> $term,
 							'compare' 		=> 'LIKE'
-							)
 						),
 						'fields'			=> 'ids',
 						'post__not_in'		=> $excluded_products,
@@ -587,20 +583,20 @@ HTML5;
 					switch ($switch_data) {
 						case 1:
 							if (!empty($sku)) {
-								$label = $sku.' - '.$title. ' - '.$symbol.$price;
+								$label = $sku.' - '.$title. ' - '.$price;
 							} else {
-								$label = $title. ' - '.$symbol.$price;
+								$label = $title. ' - '.$price;
 							}
 							break;
 						case 2:
 							if (!empty($sku)) {
-								$label = $title. ' - '.$symbol.$price.' - '.$sku;
+								$label = $title. ' - '.$price.' - '.$sku;
 							} else {
-								$label = $title. ' - '.$symbol.$price;
+								$label = $title. ' - '.$price;
 							}
 							break;
 						case 3:
-							$label = $title .' - '.$symbol.$price;
+							$label = $title .' - '.$price;
 							break;
 						case 4:
 							if (!empty($sku)) {

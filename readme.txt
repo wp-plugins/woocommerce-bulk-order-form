@@ -54,6 +54,12 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 
 == Changelog ==
 
+= 2.1.1 =
+
+* New: Foundation to set search time delay and character delay
+* Tweak: Reformatted price display
+* Fix: Price display not working for comma separated decimals
+
 = 2.1 =
 
 * New: Variation label display now has its own option
@@ -162,6 +168,12 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 Initial Release
 
 == Upgrade Notice ==
+
+= 2.1.1 =
+
+* New: Foundation to set search time delay and character delay
+* Tweak: Reformatted price display
+* Fix: Price display not working for comma separated decimals
 
 = 2.1 =
 

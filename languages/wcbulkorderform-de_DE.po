@@ -1,0 +1,387 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WooCommerce Bulk Order Form v2.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2015-01-09 16:40+0100\n"
+"Last-Translator: Tobias Conrad <tobiasconrad@leupus.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Poedit 1.7.1\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Poedit-KeywordsList: __;_e;__ngettext:1,2;_n:1,2;__ngettext_noop:1,2;_n_noop:1,2;_c,_nc:4c,1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;_nx_noop:4c,1,2\n"
+"X-Poedit-Basepath: ../\n"
+"X-Textdomain-Support: yes\n"
+"Language: de_DE\n"
+"X-Poedit-SearchPath-0: .\n"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:65
+#: includes/templates/variation_template/variation_search_template.php:74
+msgid "No Products Were Found"
+msgstr "﻿Keine Produkte gefunden."
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:66
+#: includes/templates/variation_template/variation_search_template.php:75
+msgid "No Variations"
+msgstr "﻿keine Variationen"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:67
+#: includes/templates/variation_template/variation_search_template.php:76
+msgid "Please Select a Product"
+msgstr "﻿Bitte wähle einen Artikel"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:68
+#: includes/templates/variation_template/variation_search_template.php:77
+msgid "Enter Quantity"
+msgstr "﻿Menge eintragen"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:128
+#: includes/templates/variation_template/variation_search_template.php:150
+msgid "Make sure to set a quantity! Please try again."
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:140
+#: includes/templates/variation_template/variation_search_template.php:162
+msgid "Looks like there was an error. Please try again."
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:144
+#: includes/templates/variation_template/variation_search_template.php:166
+msgid "Your product was successfully added to your cart."
+msgstr "﻿Deine Produkte wurden dem Warenkorb hinzugefügt."
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:148
+#: includes/templates/variation_template/variation_search_template.php:170
+msgid "View Cart</a> Your products were successfully added to your cart."
+msgstr "﻿Warenkorb anzeigen </a> Deine Produkte wurden in deinen Warenkorb gelegt."
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:201
+#: includes/templates/variation_template/variation_search_template.php:225
+msgid "Total Price:"
+msgstr "Gesamtbetrag:"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:215
+#: includes/templates/standard_template/standard_template.php:218
+#: includes/templates/variation_template/variation_search_template.php:239
+#: includes/templates/variation_template/variation_search_template.php:242
+msgid "Add Row"
+msgstr "﻿Neue Zeile hinzufügen"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template.php:222
+#: includes/templates/variation_template/variation_search_template.php:246
+msgid "Add To Cart"
+msgstr "﻿In den Warenkorb"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:34
+#: includes/templates/variation_template/variation_template_options.php:31
+msgid "Plugin Settings"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:41
+#: includes/templates/variation_template/variation_template_options.php:38
+msgid "When searching for products search by:"
+msgstr "﻿Wenn Sie auf der Suche nach Produkten suchen:"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:49
+#: includes/templates/variation_template/variation_template_options.php:46
+msgid "SKU"
+msgstr "ArtNr.:"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:50
+#: includes/templates/variation_template/variation_template_options.php:47
+msgid "ID"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:51
+#: includes/templates/standard_template/standard_template_options.php:90
+#: includes/templates/variation_template/variation_template_options.php:48
+#: includes/templates/variation_template/variation_template_options.php:69
+#: includes/templates/variation_template/variation_template_options.php:89
+msgid "Title"
+msgstr "﻿Titel"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:52
+#: includes/templates/variation_template/variation_template_options.php:49
+msgid "All"
+msgstr "﻿Alle"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:61
+#: includes/templates/variation_template/variation_template_options.php:97
+msgid "Display attribute title or just attribute value? Ex. (Color: Red) or (Red)"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:69
+#: includes/templates/variation_template/variation_template_options.php:105
+msgid "Attribute value only (recommended)"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:70
+#: includes/templates/variation_template/variation_template_options.php:106
+msgid "Attribute title and value"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:78
+#: includes/templates/variation_template/variation_template_options.php:57
+#: includes/templates/variation_template/variation_template_options.php:77
+msgid "Choose your product search results format"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:86
+#: includes/templates/variation_template/variation_template_options.php:65
+#: includes/templates/variation_template/variation_template_options.php:85
+msgid "SKU - Title - Price"
+msgstr "﻿SKU -Titel -Preis"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:87
+#: includes/templates/variation_template/variation_template_options.php:66
+#: includes/templates/variation_template/variation_template_options.php:86
+msgid "Title - Price - SKU"
+msgstr "﻿Titel - Preis -SKU"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:88
+#: includes/templates/variation_template/variation_template_options.php:67
+#: includes/templates/variation_template/variation_template_options.php:87
+msgid "Title - Price"
+msgstr "﻿Titel - Preis"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:89
+#: includes/templates/variation_template/variation_template_options.php:68
+#: includes/templates/variation_template/variation_template_options.php:88
+msgid "Title - SKU"
+msgstr "﻿Titel -SKU"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:99
+#: includes/templates/variation_template/variation_template_options.php:114
+msgid "Display \"Add New Row\" Button?"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:107
+#: includes/templates/standard_template/standard_template_options.php:125
+#: includes/templates/standard_template/standard_template_options.php:175
+#: includes/templates/variation_template/variation_template_options.php:122
+#: includes/templates/variation_template/variation_template_options.php:139
+#: includes/templates/variation_template/variation_template_options.php:188
+msgid "Yes"
+msgstr "﻿Ja"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:108
+#: includes/templates/standard_template/standard_template_options.php:126
+#: includes/templates/standard_template/standard_template_options.php:176
+#: includes/templates/variation_template/variation_template_options.php:123
+#: includes/templates/variation_template/variation_template_options.php:140
+#: includes/templates/variation_template/variation_template_options.php:189
+msgid "No"
+msgstr "﻿Nein"
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:117
+#: includes/templates/variation_template/variation_template_options.php:131
+msgid "Display product images in autocomplete search?"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:136
+#: includes/templates/variation_template/variation_template_options.php:150
+msgid "Default Shortcode Options"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:143
+#: includes/templates/variation_template/variation_template_options.php:157
+msgid "Number of rows to display on the bulk order form"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:155
+#: includes/templates/variation_template/variation_template_options.php:168
+msgid "Maximum Items to Display in a Search"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:167
+#: includes/templates/variation_template/variation_template_options.php:180
+msgid "Display price on bulk order form?"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:183
+#: includes/templates/variation_template/variation_template_options.php:196
+msgid "Title for product fields"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:195
+#: includes/templates/variation_template/variation_template_options.php:219
+msgid "Title for quantity fields"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:207
+#: includes/templates/variation_template/variation_template_options.php:231
+msgid "Title for price fields"
+msgstr ""
+
+# @ wpmenucart
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:219
+#: includes/templates/variation_template/variation_template_options.php:242
+msgid "Don't load jquery ui styles. (Don't check this unless you know your site is loading jquery ui styles from another source)"
+msgstr ""
+
+# @ woocommerce
+#: includes/templates/standard_template/standard_template_options.php:243
+#: includes/wcbulkorder-settings.php:95
+msgid "Settings"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:279
+msgid "WC Bulk Order Form Pro"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:467
+#: includes/templates/variation_template/variation_template_options.php:442
+msgid "This feature only available in"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/standard_template/standard_template_options.php:501
+#: includes/templates/variation_template/variation_template_options.php:472
+#: includes/wcbulkorder-settings.php:517
+msgid "<strong>Please note:</strong> you need to open your website in a new tab/browser window after updating the cart icon for the change to be visible!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/templates/variation_template/variation_template_options.php:208
+msgid "Title for variation fields"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:23
+msgid "Select a Template"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:29
+msgid "Select which template you want to use. Get more templates and extensions below!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:58
+msgid " Template"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:71 includes/wcbulkorder-settings.php:72
+#: includes/wcbulkorder-settings.php:81 includes/wcbulkorder-settings.php:82
+#: includes/wcbulkorder-settings.php:127
+msgid "WC Bulk Order Form"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:198
+msgid "Check out these premium extensions!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:199
+msgid "click items to read more"
+msgstr "﻿Klicken Sie auf das Produkt um mehr zu lesen"
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:206
+msgid "Go Pro: Get WooCommerce Bulk Order Form Pro!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:208
+msgid "Supercharge WooCommerce Bulk Order Form with the following features:"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:210
+msgid "Let user search by product id, title, sku, or all"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:211
+msgid "Choose from 5 different label outputs for the product field on your bulk order form"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:212
+msgid "Automatically add extra product rows with the \"add row\" button (can be turned on or off)"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:213
+msgid "Create and customize as many shortcodes as you want!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:215
+msgid "Get WooCommerce Bulk Order Form Pro!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:223
+msgid "Bulk Order Form Limit Products"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:225
+msgid "Exclude or include specific products or variations with a simple checkbox, or by category."
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:226
+msgid "Get Bulk Order Form Limit Products!"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:234
+msgid "Bulk Order Form Prepopulated Template"
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:236
+msgid "Remove the autocomplete search and pre-populate the form with your products and variations."
+msgstr ""
+
+# @ wcbulkorderform
+#: includes/wcbulkorder-settings.php:237
+msgid "Get Bulk Order Form Prepopulated Template!"
+msgstr ""
+
