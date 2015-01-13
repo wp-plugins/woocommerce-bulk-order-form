@@ -1,0 +1,57 @@
+p.bulkorder-message {
+	color: green;
+}
+p.bulkorder-message.fail {
+	color: red;
+}
+img.wcbof_autocomplete_img {
+	max-height:40px;
+	margin-right:10px;
+	border-radius:3px;
+	-moz-border-radius:3px;
+}
+i.bulkorder_spinner {
+    height: 20px;
+    margin-left: 5px;
+    margin-top: 5px;
+    position: absolute;
+    width: 20px;
+    display:none;
+   	background-image:url("../assets/spiffygif_30x30.gif");
+	background-repeat:no-repeat;
+	background-position:right top;
+	background-size: 100%;
+}
+ul.ui-autocomplete{
+    z-index: 999999 !important;
+}
+td.wcbulkorderprice, th.wcbulkorderprice, td.wcbulkorderpricetotal, td.prepopulated-button {
+	text-align:center;
+	width: 20%;
+}
+td.wcbulkorderprice, td.wcbulkorderpricetotal{
+	color: green;
+}
+td.wcbulkorder-title, th.wcbulkorder-title{
+	width: 40%;
+}
+td.wcbulkorder-quantity, th.wcbulkorder-quantity, td.wcbulkorder-variation-title, th.wcbulkorder-variation-title{
+	width: 20%;
+}
+img.wcbulkorder-image-tag{
+	max-height: 40px;
+	margin-right:5px
+}
+input.wcbulkorderquantity{
+	width: 100%;
+}
+td.wcbulkorder-spacer{
+	width: 20%;
+}
+tr.wcbulkorderformtr input{
+	width: 100%;
+	box-sizing: border-box;
+}
+tr.wcbulkorderformtr td{
+	padding-right: 10px;
+}
