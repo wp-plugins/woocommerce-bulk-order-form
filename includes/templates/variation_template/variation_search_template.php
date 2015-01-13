@@ -207,12 +207,12 @@ HTML;
 					<td class="wcbulkorder-quantity">
 						<input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" />
 					</td>
-					<?php if ($price == 'true'){ ?>
-					<td class="wcbulkorderprice"></td>
-					<?php } ?>	
-					<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />
-				</tr>
 HTML2;
+					if ($price == 'true'){
+					$html .= '<td class="wcbulkorderprice"></td>';
+					}
+					$html .='<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />';
+				$html .= '</tr>';
 			}
 		$html .= <<<HTML3
 			</tbody>
