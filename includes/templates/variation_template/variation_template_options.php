@@ -1,10 +1,12 @@
 <?php
+
 class WCBulkOrderForm_Settings_Variation_Template {
 	
 	public function __construct() {
 		add_action( 'admin_init', array( &$this, 'init_settings' ) ); // Registers settings
 		add_action('wcbulkorderform_settings',array(&$this,'print_settings'));
 	}
+
 	/**
 	 * Print Settings
 	 */
@@ -14,6 +16,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		$option = get_option('wcbulkorderform_variation_template');
 		//print_r($option);
 	}
+
 	/**
 	 * User settings.
 	 */
@@ -25,7 +28,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			add_option( $option );
 		}
 	
-		// Section.
+		// Main plugin options section.
 		add_settings_section(
 			'plugin_settings',
 			__( 'Plugin Settings', 'wcbulkorderform' ),
@@ -33,6 +36,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			$option
 		);
 		
+		// Search by field
 		add_settings_field(
 			'search_by',
 			__( 'When searching for products search by:', 'wcbulkorderform' ),
@@ -52,6 +56,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> '4'
 			)
 		);
+		
+		// How should we display the product search results?
 		add_settings_field(
 			'search_format',
 			__( 'Choose your product search results format', 'wcbulkorderform' ),
@@ -72,9 +78,11 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> '2'
 			)
 		);
+
+		// How should we display the variation search results?
 		add_settings_field(
 			'variation_search_format',
-			__( 'Choose your product search results format', 'wcbulkorderform' ),
+			__( 'Choose your variation display format', 'wcbulkorderform' ),
 			array( &$this, 'radio_element_callback' ),
 			$option,
 			'plugin_settings',
@@ -92,6 +100,26 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> '2'
 			)
 		);
+
+		// How should we display variations?
+		add_settings_field(
+			'variation_display_format',
+			__( 'Display variations & attributes?', 'wcbulkorderform' ),
+			array( &$this, 'radio_element_callback' ),
+			$option,
+			'plugin_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'variation_display_format',
+				'options' 		=> array(
+					'1'			=> __( 'Variations only' , 'wcbulkorderform' ),
+					'2'			=> __( 'Variations & Attributes' , 'wcbulkorderform' )
+				),
+				'default'		=> '2'
+			)
+		);
+
+		// How should we display attributes?
 		add_settings_field(
 			'attribute_style',
 			__( 'Display attribute title or just attribute value? Ex. (Color: Red) or (Red)', 'wcbulkorderform' ),
@@ -108,7 +136,27 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> 'false'
 			)
 		);
+
+		// display an add to cart button next to each product field?
+		add_settings_field(
+			'single_add_to_cart',
+			__( 'Display an add to cart button next to each product', 'wcbulkorderform' ),
+			array( &$this, 'radio_element_callback' ),
+			$option,
+			'plugin_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'single_add_to_cart',
+				'options' 		=> array(
+					'true'		=> __( 'Yes' , 'wcbulkorderform' ),
+					'false'		=> __( 'No' , 'wcbulkorderform' )
+				),
+				'disabled'		=> true,
+				'default'		=> 'false'
+			)
+		);
 		
+		// display new row buttton? Yes/no
 		add_settings_field(
 			'new_row_button',
 			__( 'Display "Add New Row" Button?', 'wcbulkorderform' ),
@@ -126,6 +174,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'default'		=> 'false'
 			)
 		);
+
+		// display images in search? Yes/no
 		add_settings_field(
 			'display_images',
 			__( 'Display product images in autocomplete search?', 'wcbulkorderform' ),
@@ -144,7 +194,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			)
 		);
 		
-		// Section.
+		// Advanced settings Section.
 		add_settings_section(
 			'advanced_settings',
 			__( 'Default Shortcode Options', 'wcbulkorderform' ),
@@ -152,6 +202,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			$option
 		);
 		
+		// number of rows to display?
 		add_settings_field(
 			'bulkorder_row_number',
 			__( 'Number of rows to display on the bulk order form', 'wcbulkorderform' ),
@@ -163,6 +214,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'bulkorder_row_number'
 			)
 		);
+
+		// max number of items to return in search result?
 		add_settings_field(
 			'max_items',
 			__( 'Maximum Items to Display in a Search', 'wcbulkorderform' ),
@@ -175,6 +228,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			)
 		);
 		
+		// show the price column? Yes/no
 		add_settings_field(
 			'display_price',
 			__( 'Display price on bulk order form?', 'wcbulkorderform' ),
@@ -191,6 +245,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			)
 		);
 		
+		// product column title
 		add_settings_field(
 			'product_field_title',
 			__( 'Title for product fields', 'wcbulkorderform' ),
@@ -203,6 +258,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			)
 		);
 		
+		// variation column title
 		add_settings_field(
 			'variation_field_title',
 			__( 'Title for variation fields', 'wcbulkorderform' ),
@@ -214,6 +270,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'variation_field_title'
 			)
 		);
+
+		// quantity column title
 		add_settings_field(
 			'quantity_field_title',
 			__( 'Title for quantity fields', 'wcbulkorderform' ),
@@ -226,6 +284,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 			)
 		);
 		
+		// price column title
 		add_settings_field(
 			'price_field_title',
 			__( 'Title for price fields', 'wcbulkorderform' ),
@@ -237,6 +296,8 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'price_field_title'
 			)
 		);
+
+		// disable jquery ui css? Not recommended in most cases
 		add_settings_field(
 			'no_load_css',
 			__( "Don't load jquery ui styles. (Don't check this unless you know your site is loading jquery ui styles from another source)", 'wcbulkorderform' ),
@@ -248,10 +309,59 @@ class WCBulkOrderForm_Settings_Variation_Template {
 				'id'			=> 'no_load_css',
 			)
 		);
+
+		// add to cart success message
+		add_settings_field(
+			'add_to_cart_success_message',
+			__( 'Add to Cart Success Message: Use {wcbo_pn} for product name', 'wcbulkorderform' ),
+			array( &$this, 'text_element_callback' ),
+			$option,
+			'advanced_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'add_to_cart_success_message',
+				'disabled'		=> true,
+			)
+		);
+
+		// add to cart failure message
+		add_settings_field(
+			'add_to_cart_failure_message',
+			__( 'Add to Cart Failure Message: Use {wcbo_pn} for product name', 'wcbulkorderform' ),
+			array( &$this, 'text_element_callback' ),
+			$option,
+			'advanced_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'add_to_cart_failure_message',
+				'disabled'		=> true,
+			)
+		);
+
+		// pick between cart/checkout
+		add_settings_field(
+			'send_to_cart_or_checkout',
+			__( 'Set button to cart or checkout?', 'wcbulkorderform' ),
+			array( &$this, 'radio_element_callback' ),
+			$option,
+			'advanced_settings',
+			array(
+				'menu'			=> $option,
+				'id'			=> 'send_to_cart_or_checkout',
+				'options' 		=> array(
+					'cart'			=> __( 'Cart' , 'woocommerce' ),
+					'checkout'		=> __( 'Checkout' , 'woocommerce' )
+				),
+				'disabled'		=> true,
+			)
+		);
+
 		// Register settings.
 		register_setting( $option, $option, array( &$this, 'wcbulkorderform_options_validate' ) );
+
 		// Register defaults if settings empty (might not work in case there's only checkboxes and they're all disabled)
 		$option_values = get_option($option);
+
 		if ( empty( $option_values ) ) {
 			$this->default_settings();
 		}
@@ -263,24 +373,30 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	public function default_settings() {
 		global $options;
 		$default = array(
-			'search_by'					=> '4',
-			'search_format'				=> '2',
-			'variation_search_format'	=> '2',
-			'new_row_button'			=> 'false',
-			'bulkorder_row_number'		=> '5',
-			'max_items'					=> '20',
-			'display_price'				=> 'true',
-			'product_field_title'		=> 'Product',
-			'variation_field_title'		=> 'Variation',
-			'quantity_field_title'		=> 'Quantity',
-			'price_field_title'			=> 'Price',
-			'no_load_css'				=> '',
-			'display_images'			=> 'false',
-			'attribute_style'			=> 'true'
+			'search_by'						=> '4',
+			'search_format'					=> '2',
+			'variation_search_format' 		=> '2',
+			'variation_display_format'		=> '2',
+			'new_row_button'				=> 'false',
+			'bulkorder_row_number'			=> '5',
+			'max_items'						=> '20',
+			'display_price'					=> 'true',
+			'product_field_title'			=> 'Product',
+			'variation_field_title'			=> 'Variation',
+			'quantity_field_title'			=> 'Quantity',
+			'price_field_title'				=> 'Price',
+			'no_load_css'					=> '',
+			'display_images'				=> 'false',
+			'attribute_style'				=> 'true',
+			'single_add_to_cart'			=> 'false',
+			'add_to_cart_success_message'	=> '{wcbo_pn} successfully added to cart.',
+			'add_to_cart_failure_message'	=> 'There was an error adding {wcbo_pn} to your cart.',
+			'send_to_cart_or_checkout'		=> 'cart'
 		);
 		
 		update_option( 'wcbulkorderform_variation_template', $default );
 	}
+
 	/**
 	 * Text field callback.
 	 *
@@ -342,6 +458,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		
 		echo $html;
 	}
+
 	/**
 	 * Displays a multiple selectbox for a settings field
 	 *
@@ -379,6 +496,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		
 		echo $html;
 	}
+
 	/**
 	 * Checkbox field callback.
 	 *
@@ -408,6 +526,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	
 		echo $html;
 	}
+
 	/**
 	 * Displays a multicheckbox a settings field
 	 *
@@ -445,6 +564,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		}
 		echo $html;
 	}
+
 	/**
 	 * Displays a multicheckbox a settings field
 	 *
@@ -473,6 +593,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 		
 		echo $html;
 	}
+
 	/**
 	 * Section null callback.
 	 *
@@ -481,6 +602,7 @@ class WCBulkOrderForm_Settings_Variation_Template {
 	public function section_options_callback() {
 	
 	}
+
 	/**
 	 * Validate/sanitize options input
 	 */

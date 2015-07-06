@@ -1,10 +1,12 @@
 <?php
+
 class WCBulkOrderForm_Settings {
 	
 	public function __construct() {
-		add_action( 'admin_init', array( &$this, 'init_settings' ) ); // Registers settings
-		add_action( 'admin_menu', array( &$this, 'wcbulkorderform_add_page' ) );
+		add_action( 'admin_init', array( $this, 'init_settings' ) ); // Registers settings
+		add_action( 'admin_menu', array( $this, 'wcbulkorderform_add_page' ) );
 	}
+
 	/**
 	 * User settings.
 	 */
@@ -17,17 +19,19 @@ class WCBulkOrderForm_Settings {
 			add_option( $option );
 		}
 	
-		// Section.
+		// Template Selection Section.
 		add_settings_section(
 			'plugin_settings',
 			__( 'Select a Template', 'wcbulkorderform' ),
-			array( &$this, 'section_options_callback' ),
+			array( $this, 'section_options_callback' ),
 			$option
 		);
+
+		// Template Selection
 		add_settings_field(
 			'template_style',
-			__( 'Select which template you want to use. Get more templates and extensions below!', 'wcbulkorderform' ),
-			array( &$this, 'radio_element_callback' ),
+			__( 'Select which template you want to use. More Templates Coming Soon!', 'wcbulkorderform' ),
+			array( $this, 'radio_element_callback' ),
 			$option,
 			'plugin_settings',
 			array(
@@ -39,15 +43,19 @@ class WCBulkOrderForm_Settings {
 		);
 
 		// Register settings.
-		register_setting( $option, $option, array( &$this, 'wcbulkorderform_options_validate' ) );
+		register_setting( $option, $option, array( $this, 'wcbulkorderform_options_validate' ) );
 
 		// Register defaults if settings empty (might not work in case there's only checkboxes and they're all disabled)
 		$option_values = get_option($option);
+		
 		if ( empty( $option_values ) ) {
 			$this->default_settings();
 		}
 	}
 
+	/*
+	 * Get Registered Templates
+	*/
 	function template_types(){
 		$sections = array();
 		$sections = get_option('wcbulkorderform_sections');
@@ -61,9 +69,9 @@ class WCBulkOrderForm_Settings {
 		return $templates;
 	}
 
-	/**
+	/*
 	 * Add menu page
-	 */
+	*/
 	public function wcbulkorderform_add_page() {
 		if (class_exists('WPOvernight_Core')) {
 			$wcbulkorderform_page = add_submenu_page(
@@ -74,8 +82,7 @@ class WCBulkOrderForm_Settings {
 				'wcbulkorderform_options_page',
 				array( $this, 'wcbulkorderform_options_do_page' )
 			);
-		}
-		else {
+		} else {
 			$wcbulkorderform_page = add_submenu_page(
 				'options-general.php',
 				__( 'WC Bulk Order Form', 'wcbulkorderform' ),
@@ -121,7 +128,6 @@ class WCBulkOrderForm_Settings {
 	 */
 	public function wcbulkorderform_options_do_page() {
 		?>
-	
 		<div class="wrap">
 			<div class="icon32" id="icon-options-general"><br /></div>
 			<h2><?php _e('WC Bulk Order Form','wcbulkorderform') ?></h2>
@@ -178,27 +184,22 @@ class WCBulkOrderForm_Settings {
 			        	<?php
 			        }
 				?>
-
 			</form>
 			<?php if (!class_exists('WCBulkOrderFormPro') || !class_exists('WCBulkOrder_Product_Limiter') || !class_exists('WCBulkOrderForm_Prepopulated')){ ?>
 			<script type="text/javascript">
 			jQuery(document).ready(function() {
 				jQuery('.extensions .more').hide();
-
 				jQuery('.extensions > li').click(function() {
 					jQuery(this).toggleClass('expanded');
 					jQuery(this).find('.more').slideToggle();
 				});
 			});
 			</script>
-
 			<div class="wcpdf-extensions-ad">
-
 				<img src="<?php echo plugins_url( 'images/wpo-helper.png', __FILE__ ); ?>" class="wpo-helper">
 				<h3><?php _e( 'Check out these premium extensions!', 'wcbulkorderform' ); ?></h3>
-				<i>(<?php _e( 'click items to read more', 'wcbulkorderform' ); ?>)</i>
+				<i>(<?php _e( 'Click items to read more', 'wcbulkorderform' ); ?>)</i>
 				<ul class="extensions">
-
 					<?php
 					if (!class_exists('WCBulkOrderFormPro')) {
 						?>
@@ -211,18 +212,21 @@ class WCBulkOrderForm_Settings {
 								<li><?php _e('Choose from 5 different label outputs for the product field on your bulk order form','wcbulkorderform') ?></li>
 								<li><?php _e('Automatically add extra product rows with the "add row" button (can be turned on or off)','wcbulkorderform') ?>*</li>
 								<li><?php _e('Create and customize as many shortcodes as you want!','wcbulkorderform') ?></li>
+								<li><?php _e('Display images in product search','wcbulkorderform') ?></li>
+								<li><?php _e('Set custom add to cart success/failure messages','wcbulkorderform') ?></li>
+								<li><?php _e('Pick to send user to cart or checkout','wcbulkorderform') ?></li>
+								<li><?php _e('Option to include add to cart button next to each product field','wcbulkorderform') ?></li>
 							</ul>
 							<a href="https://wpovernight.com/downloads/woocommerce-bulk-order-form/" target="_blank"><?php _e("Get WooCommerce Bulk Order Form Pro!", 'wcbulkorderform'); ?></a>
 						</li>
 					<?php } ?>
-
 					<?php
 					if (!class_exists('WCBulkOrder_Product_Limiter')) {
 						?>
 						<li>
 							<?php _e('Bulk Order Form Limit Products', 'wcbulkorderform')?>
 							<div class="more" style="display:none;">
-								<?php _e( 'Exclude or include specific products or variations with a simple checkbox, or by category.', 'wcbulkorderform' ); ?><br/>
+								<?php _e( 'Exclude or include specific products or variations with a simple checkbox, or by category', 'wcbulkorderform' ); ?><br/>
 								<a href="https://wpovernight.com/downloads/bulk-order-form-limit-products/" target="_blank"><?php _e("Get Bulk Order Form Limit Products!", 'wcbulkorderform'); ?></a>
 							</div>
 						</li>
@@ -233,7 +237,7 @@ class WCBulkOrderForm_Settings {
 						<li>
 							<?php _e('Bulk Order Form Prepopulated Template', 'wcbulkorderform')?>
 							<div class="more" style="display:none;">
-								<?php _e( 'Remove the autocomplete search and pre-populate the form with your products and variations.', 'wcbulkorderform' ); ?><br/>
+								<?php _e( 'Remove the autocomplete search and pre-populate the form with your products and variations. (Very Popular)!', 'wcbulkorderform' ); ?><br/>
 								<a href="https://wpovernight.com/downloads/wc-bulk-order-form-prepopulated/" target="_blank"><?php _e("Get Bulk Order Form Prepopulated Template!", 'wcbulkorderform'); ?></a>
 							</div>
 						</li>
@@ -252,32 +256,26 @@ class WCBulkOrderForm_Settings {
 					margin-top: 15px;
 					margin-bottom: 15px;
 				}
-
 				img.wpo-helper {
 					position: absolute;
 					top: -20px;
 					left: 3px;
 				}
-
 				.wcpdf-extensions-ad h3 {
 					margin: 0;
 				}
-
 				.wcpdf-extensions-ad ul {
 					margin: 0;
 					margin-left: 1.5em;
 				}
-
 				.extensions li {
 					margin: 0;
 				}
-
 				.extensions li ul {
 					list-style-type: square;
 					margin-top: 0.5em;
 					margin-bottom: 0.5em;
 				}
-
 				.extensions > li:before { 
 					content: "";
 					border-color: transparent transparent transparent #111;
@@ -290,20 +288,17 @@ class WCBulkOrderForm_Settings {
 					top: 0.9em;
 					position: relative;
 				}
-
 				.extensions .expanded:before {
 					border-color: #111 transparent transparent transparent;
 					left: -1.17em;
 					border-width: 0.45em 0.45em 0.35em 0.35em !important;
 				}
-
 				.extensions .more {
 					padding: 10px;
 					background-color: white;
 					border: 1px solid #ccc;
 					border-radius: 5px;
 				}
-
 				.extensions table td {
 					vertical-align: top;
 				}
@@ -318,8 +313,6 @@ class WCBulkOrderForm_Settings {
 			    $("input.wcbulkorder-disabled").attr('disabled',true);
 			});
 		</script>
-		<h2>Customer Support</h2>
-		<p>Have customer support questions? Contact support@wpovernight.com. For instant help browse our <a href="https://wpovernight.com/faq-category/bulk-order-form/" target="_blank">Bulk Order Form FAQs</a>.</p>
 		</div>
 		<?php
 	}
@@ -343,7 +336,6 @@ class WCBulkOrderForm_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$disabled = (isset( $args['disabled'] )) ? ' disabled' : '';
 		$html = sprintf( '<input type="text" id="%1$s" name="%2$s[%1$s]" value="%3$s" size="%4$s"%5$s/>', $id, $menu, $current, $size, $disabled );
 	
@@ -371,7 +363,6 @@ class WCBulkOrderForm_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$disabled = (isset( $args['disabled'] )) ? ' disabled' : '';
 		
 		$html = sprintf( '<select name="%1$s[%2$s]" id="%1$s[%2$s]"%3$s>', $menu, $id, $disabled );
@@ -381,7 +372,6 @@ class WCBulkOrderForm_Settings {
 			$html .= sprintf( '<option value="%s"%s>%s</option>', $key, selected( $current, $key, false ), $label );
 		}
 		$html .= sprintf( '</select>' );
-
 		if ( isset( $args['description'] ) ) {
 			$html .= sprintf( '<p class="description">%s</p>', $args['description'] );
 		}
@@ -473,7 +463,6 @@ class WCBulkOrderForm_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$html = '';
 		foreach ( $args['options'] as $key => $label ) {
 			$html .= sprintf( '<input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s />', $menu, $id, $key, checked( $current, $key, false ) );
@@ -484,7 +473,6 @@ class WCBulkOrderForm_Settings {
 		if ( isset( $args['description'] ) ) {
 			$html .= sprintf( '<p class="description">%s</p>', $args['description'] );
 		}
-
 		echo $html;
 	}
 
@@ -504,7 +492,6 @@ class WCBulkOrderForm_Settings {
 		} else {
 			$current = isset( $args['default'] ) ? $args['default'] : '';
 		}
-
 		$icons = '';
 		$radios = '';
 		
@@ -512,7 +499,6 @@ class WCBulkOrderForm_Settings {
 			$icons .= sprintf( '<td style="padding-bottom:0;font-size:16pt;" align="center"><label for="%1$s[%2$s][%3$s]"><i class="wcbulkorderform-icon-shopping-cart-%4$s"></i></label></td>', $menu, $id, $key, $iconnumber);
 			$radios .= sprintf( '<td style="padding-top:0" align="center"><input type="radio" class="radio" id="%1$s[%2$s][%3$s]" name="%1$s[%2$s]" value="%3$s"%4$s /></td>', $menu, $id, $key, checked( $current, $key, false ) );
 		}
-
 		$html = '<table><tr>'.$icons.'</tr><tr>'.$radios.'</tr></table>';
 		$html .= '<p class="description"><i>'. __('<strong>Please note:</strong> you need to open your website in a new tab/browser window after updating the cart icon for the change to be visible!','wcbulkorderform').'</p>';
 		
@@ -534,20 +520,15 @@ class WCBulkOrderForm_Settings {
 	public function wcbulkorderform_options_validate( $input ) {
 		// Create our array for storing the validated options.
 		$output = array();
-
 		// Loop through each of the incoming options.
 		foreach ( $input as $key => $value ) {
-
 			// Check to see if the current option has a value. If so, process it.
 			if ( isset( $input[$key] ) ) {
-
 				// Strip all HTML and PHP tags and properly handle quoted strings.
 				$output[$key] = strip_tags( stripslashes( $input[$key] ) );
 			}
 		}
-
 		// Return the array processing any additional functions filtered by this action.
 		return apply_filters( 'wcbulkorderform_validate_input', $output, $input );
 	}
-
 }

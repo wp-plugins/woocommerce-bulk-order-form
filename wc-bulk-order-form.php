@@ -3,7 +3,7 @@
   Plugin Name: WooCommerce Bulk Order Form
   Plugin URI: http://wpovernight.com/
   Description: Adds the [wcbulkorder] shortcode which allows you to display bulk order forms on any page in your site
-  Version: 2.1.2
+  Version: 2.2
   Author: Jeremiah Prummer
   Author URI: http://wpovernight.com/
   License: GPL2
@@ -17,15 +17,14 @@
   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   GNU General Public License for more details.
  */
-?>
-<?php
+
 class WCBulkOrderForm {
-	private static $add_script;
+
 	/**
 	 * Construct.
 	 */
 	public function __construct() {
-		//register_activation_hook( __FILE__, array( $this, 'delete_old_options' ) );
+		register_activation_hook( __FILE__, array( $this, 'delete_old_options' ) );
 		$this->includes();
 		$mainoptions = get_option('wcbulkorderform');
 		$this->settings = new WCBulkOrderForm_Settings();
@@ -35,11 +34,16 @@ class WCBulkOrderForm {
 		}
 		register_activation_hook( __FILE__, array( $this, 'register_templates' ) );
 		register_activation_hook( __FILE__, array( $this, 'register_default_template' ) );
-		add_action( 'plugins_loaded', array( &$this, 'languages' ), 0 ); // or use init?
+		add_action( 'plugins_loaded', array( $this, 'languages' ), 0 ); // or use init?
 	}
+	
+	/**
+	 * Delete Options starting in version 2.2. Remove by version 2.3
+	 */
 	function delete_old_options(){
 		delete_option( 'wcbulkorderform' );
 	}
+
 	/**
 	 * Load additional classes and functions
 	 */
@@ -66,6 +70,7 @@ class WCBulkOrderForm {
 	public function languages() {
 		load_plugin_textdomain( 'wcbulkorderform', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
 	}
+
 	/**
 	 * Register Standard Templates
 	 */
@@ -83,9 +88,15 @@ class WCBulkOrderForm {
 		}
 		update_option('wcbulkorderform_sections',$sections);
 	}
+
+	/**
+	 * set Standard Template as the Default 
+	*/
+
 	function register_default_template(){
 		include_once( 'includes/templates/standard_template/standard_template.php' );
 		$WCBulkOrderForm_Standard_Template = new WCBulkOrderForm_Standard_Template();
 	}
+
 }
 $WCBulkOrderForm = new WCBulkOrderForm();

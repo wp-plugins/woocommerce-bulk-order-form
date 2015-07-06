@@ -10,6 +10,7 @@ class WCBulkOrderForm_Variation_Template{
 	 * Construct.
 	 */
 	public function __construct() {
+		global $woocommerce;
 		$this->includes();
 		$this->options = get_option('wcbulkorderform_variation_template');
 		//print_r($this->options);
@@ -26,10 +27,17 @@ class WCBulkOrderForm_Variation_Template{
 		add_action( 'wp_ajax_nopriv_bulk_order_product_search', array( &$this, 'bulk_order_product_search' ));
 		add_action( 'wp_ajax_bulk_order_variation_search', array( &$this, 'bulk_order_variation_search' ));
 		add_action( 'wp_ajax_nopriv_bulk_order_variation_search', array( &$this, 'bulk_order_variation_search' ));
-		add_action('wp_print_styles', array( &$this, 'load_styles' ), 0 );
+		add_action( 'wp_ajax_ajax_product_add_to_cart', array( &$this, 'ajax_product_add_to_cart' ));
+		add_action( 'wp_ajax_nopriv_ajax_product_add_to_cart', array( &$this, 'ajax_product_add_to_cart' ));
+		add_action( 'wp_ajax_ajax_multiproduct_add_to_cart', array( &$this, 'ajax_multiproduct_add_to_cart' ));
+		add_action( 'wp_ajax_nopriv_ajax_multiproduct_add_to_cart', array( &$this, 'ajax_multiproduct_add_to_cart' ));
+		add_action( 'wp_ajax_ajax_item_price', array( &$this, 'ajax_item_price' ));
+		add_action( 'wp_ajax_nopriv_ajax_item_price', array( &$this, 'ajax_item_price' ));
+		add_action( 'wp_print_styles', array( &$this, 'load_styles' ), 0 );
 		add_action( 'wp', array($this,'process_bulk_order_form') );
-		add_action('init', array( &$this, 'register_script'));
-		add_action('wp_footer', array( &$this, 'print_script'));
+		add_action( 'init', array( &$this, 'register_script'));
+		add_action( 'wp_footer', array( &$this, 'print_script'));
+		add_action( 'wp_print_styles', array(&$this,'localize_script'));
 	}
 	
 	/**
@@ -66,11 +74,15 @@ class WCBulkOrderForm_Variation_Template{
 	
 	/**
 	 * Load JS
-	 */   
-	static function register_script() {
-		$options = get_option('wcbulkorderform_variation_template');
+	 */
+	function register_script() {
 		wp_register_script('wcbulkorder_acsearch', plugins_url( '/js/wcbulkorder_acsearch.js' , __FILE__ ), array('jquery','jquery-ui-autocomplete'),null,true);
+	}
+	function localize_script() {
+		global $woocommerce;
+		$options = get_option('wcbulkorderform_variation_template');
 		$display_images = isset($options['display_images']) ? $options['display_images'] : '';
+		$send_to_cart_or_checkout = isset($options['send_to_cart_or_checkout']) ? $options['send_to_cart_or_checkout'] : '';
 		$noproductsfound = __( 'No Products Were Found', 'wcbulkorderform' );
 		$variation_noproductsfound = __( 'No Variations', 'wcbulkorderform' );
 		$selectaproduct = __( 'Please Select a Product', 'wcbulkorderform' );
@@ -80,14 +92,24 @@ class WCBulkOrderForm_Variation_Template{
   		$num_decimals = absint( get_option( 'woocommerce_price_num_decimals' ) );
 		$minLength = 0;
 		$Delay = 500;
-		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound, 'decimal_sep' => $decimal_sep, 'thousands_sep' => $thousands_sep, 'num_decimals' => $num_decimals, 'Delay' => $Delay, 'minLength' => $minLength ));
+		$single_buttons = $options['variation_display_format'];
+		if($send_to_cart_or_checkout == 'checkout'){
+			$checkouttext = __( 'Checkout' , 'woocommerce' );
+			$checkouturl = $woocommerce->cart->get_checkout_url();
+		} else {
+			$checkouttext = __( 'Cart' , 'woocommerce' );
+			$checkouturl = $woocommerce->cart->get_cart_url();
+		}
+		wp_localize_script( 'wcbulkorder_acsearch', 'WCBulkOrder', array('url' => admin_url( 'admin-ajax.php' ), 'search_products_nonce' => wp_create_nonce('wcbulkorder-search-products'), 'display_images' => $display_images, 'noproductsfound' => $noproductsfound, 'selectaproduct' => $selectaproduct, 'enterquantity' => $enterquantity, 'variation_noproductsfound' => $variation_noproductsfound,'variation_noproductsfound' => $variation_noproductsfound, 'decimal_sep' => $decimal_sep, 'thousands_sep' => $thousands_sep, 'num_decimals' => $num_decimals, 'Delay' => $Delay, 'minLength' => $minLength, 'single_buttons' => $single_buttons, 'checkouttext' => $checkouttext, 'checkouturl' => $checkouturl ));
 	}
+
 	static function print_script() {
 		if ( ! self::$add_script )
 			return;
 		wp_print_scripts('wcbulkorder_acsearch');
 		wp_enqueue_style( 'wcbulkorder-jquery-ui' );
 		wp_enqueue_style( 'wcbulkorderform' );
+		wp_dequeue_script('yith_wcas_jquery-autocomplete');
 	}
 	function process_bulk_order_form() {
         $prod_name = '';
@@ -95,6 +117,7 @@ class WCBulkOrderForm_Variation_Template{
 			$prod_name = $_POST['wcbulkorderproduct'];
 			$prod_quantity = $_POST['wcbulkorderquantity'];
 			$prod_id = $_POST['wcbulkorderid'];
+			print_r($_POST);
 			$i = 0;
 			foreach($prod_id as $key => $value) {
 				$ancestors = '';
@@ -125,6 +148,261 @@ class WCBulkOrderForm_Variation_Template{
 			
 		}
     }
+
+     function ajax_multiproduct_add_to_cart(){
+    	global $post, $woocommerce, $product;
+
+		foreach($_POST as $item){
+			$success_message = isset($this->options['add_to_cart_success_message']) ? $this->options['add_to_cart_success_message'] : '{wcbo_pn} successfully added to cart.';
+			$failure_message = isset($this->options['add_to_cart_failure_message']) ? $this->options['add_to_cart_failure_message'] : 'There was an error adding {wcbo_pn} to your cart.';
+			/* Set arrays and variables */
+	    	$prod_id = $item['id'];
+	    	$var_id = '';
+	    	$quantity = $item['quantity'];
+	    	$attributes = $item['atts'];
+
+	    	/* Get Product by id*/
+	    	$product = wc_get_product($prod_id);
+
+			/* Set attribute array for this cart item and modify it to fit  */
+			$att_query = array();
+			foreach($attributes as $name => $value){
+				$new_att_name = 'attribute_'.$name;
+				$value = str_replace(" ","-",$value);
+				$att_query[$new_att_name] = strtolower($value);
+			}
+
+			/* If has children get variations and check the array against the data passed before */
+			if($product->has_child()) {
+				$available_variations = $product->get_available_variations();
+				$count = count($available_variations);
+				/* if only one variation, use only one id */
+				if($count == '1'){
+					foreach($available_variations as $avar){
+						$var_id = $avar['variation_id'];
+						$attributes = $att_query;
+						$result = $woocommerce->cart->add_to_cart($prod_id, $quantity, $var_id, $attributes, null);
+						if(!empty($result)){
+							$message = $success_message;
+							$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+							wc_print_notice( $message, $notice_type = 'success' );
+						} else {
+							$message = $failure_message;
+							$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+							wc_print_notice( $message, $notice_type = 'error' );
+						}
+					}
+				/* if more than one variation, do this fancy pants logic */	
+				} elseif($count > '1'){
+					$var_id = '';
+					$count_difference = '999';
+					foreach($available_variations as $avar){
+						$attributes = $avar['attributes'];
+						$att_count = count($attributes);
+						/* check for exact match. If exact, add to cart and exit */
+						if($att_query == $attributes){
+							$var_id = $avar['variation_id'];
+							break;
+						} else {
+							$difference = array_diff($att_query, $attributes);
+							$cdif = count($difference);
+							if($cdif < $count_difference){
+								$count_difference = $cdif;
+								$var_id = $avar['variation_id'];
+								$check_dif = $difference;
+							}
+
+						}
+					}
+					$attributes = $att_query;
+					$result = $woocommerce->cart->add_to_cart($prod_id, $quantity, $var_id, $attributes, null);
+					if(!empty($result)){
+						$message = $success_message;
+						$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+						wc_print_notice( $message, $notice_type = 'success' );
+					} else {
+						$message = $failure_message;
+						$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+						wc_print_notice( $message, $notice_type = 'error' );
+					}
+				}
+			/* If no children, just add to cart */	
+			} else {
+				$result = $woocommerce->cart->add_to_cart($prod_id, $quantity);
+				if(!empty($result)){
+					$message = $success_message;
+					$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+					wc_print_notice( $message, $notice_type = 'success' );
+				} else {
+					$message = $failure_message;
+					$message = html_entity_decode(str_replace('{wcbo_pn}', $product->get_formatted_name(), $message));
+					wc_print_notice( $message, $notice_type = 'error' );
+				}
+			}
+		}
+		exit;
+    }
+
+    function ajax_product_add_to_cart(){
+    	global $post, $woocommerce, $product;
+
+		/* Set arrays and variables */
+    	$prod_id = $_POST['id'];
+    	$var_id = '';
+    	$quantity = $_POST['quantity'];
+    	$attributes = $_POST['atts'];
+
+    	/* Get Product by id*/
+    	$product = wc_get_product($prod_id);
+
+		/* Set attribute array for this cart item and modify it to fit  */
+		$att_query = array();
+		foreach($attributes as $name => $value){
+			$new_att_name = 'attribute_'.$name;
+			$value = str_replace(" ","-",$value);
+			$att_query[$new_att_name] = strtolower($value);
+		}
+
+		/* If has children get variations and check the array against the data passed before */
+		if($product->has_child()) {
+			$available_variations = $product->get_available_variations();
+			$count = count($available_variations);
+			/* if only one variation, use only one id */
+			if($count == '1'){
+				foreach($available_variations as $avar){
+					$var_id = $avar['variation_id'];
+					$attributes = $att_query;
+					$result = $woocommerce->cart->add_to_cart($prod_id, $quantity, $var_id, $attributes, null);
+				}
+			/* if more than one variation, do this fancy pants logic */	
+			} elseif($count > '1'){
+				$var_id = '';
+				$count_difference = '999';
+				foreach($available_variations as $avar){
+					$attributes = $avar['attributes'];
+					$att_count = count($attributes);
+					/* check for exact match. If exact, add to cart and exit */
+					if($att_query == $attributes){
+						$var_id = $avar['variation_id'];
+						break;
+					} else {
+						$difference = array_diff($att_query, $attributes);
+						$cdif = count($difference);
+						if($cdif < $count_difference){
+							$count_difference = $cdif;
+							$var_id = $avar['variation_id'];
+							$check_dif = $difference;
+						}
+
+					}
+				}
+				$attributes = $att_query;
+				$result = $woocommerce->cart->add_to_cart($prod_id, $quantity, $var_id, $attributes, null);
+			}
+		/* If no children, just add to cart */	
+		} else {
+			$result = $woocommerce->cart->add_to_cart($prod_id, $quantity);
+		}
+		/* Call WC ajax after add to cart. Not yet found a way to make this work. */
+		//add_filter('add_to_cart_fragments', WC_AJAX::get_refreshed_fragments());
+		//add_action('woocommerce_add_to_cart','');
+
+		/* cart notices */
+		$notices = wc_get_notices();
+		if(!empty($notices)){
+			wc_print_notices();
+			exit;
+		}
+		if(!empty($result) && empty($notices)){
+			echo '<ul class="woocommerce-success"><li>Product successfully added to your cart.</li></ul>';
+			exit;
+		}
+		if(empty($result) && empty($notices)){
+			echo '<ul class="woocommerce-error"><li>Product could not be added to your cart.</li></ul>';
+			exit;
+		} else {
+			exit;
+		}
+    }
+
+    function ajax_item_price(){
+    	global $post, $woocommerce, $product;
+
+    	/* Set arrays and variables */
+    	$prod_id = $_POST['id'];
+    	$var_id = '';
+    	$quantity = $_POST['quantity'];
+    	$attributes = $_POST['atts'];
+
+    	/* Get Product by id*/
+    	$product = wc_get_product($prod_id);
+
+		/* Set attribute array for this cart item and modify it to fit  */
+		$att_query = array();
+		foreach($attributes as $name => $value){
+			$new_att_name = 'attribute_'.$name;
+			$value = str_replace(" ","-",$value);
+			$att_query[$new_att_name] = strtolower($value);
+		}
+
+		/* If has children get variations and check the array against the data passed before */
+		if($product->has_child()) {
+			$available_variations = $product->get_available_variations();
+			//print_r($available_variations);
+			$count = count($available_variations);
+			/* if only one variation, use only one id */
+			if($count == '1'){
+				foreach($available_variations as $avar){
+					$var_id = $avar['variation_id'];
+				}
+				$product = new WC_Product_Variation($var_id);
+				$price_html = $product->get_price_html();
+                if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
+				    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
+				    $price_html = $matches[1];
+				}
+				echo html_entity_decode($price_html);
+				exit;
+			/* if more than one variation, do this fancy pants logic */	
+			} elseif($count > '1'){
+				$var_id = '';
+				$count_difference = '999';
+				foreach($available_variations as $avar){
+					$attributes = $avar['attributes'];
+					$att_count = count($attributes);
+					/* check for exact match. If exact, add to cart and exit */
+					if($att_query == $attributes){
+						$var_id = $avar['variation_id'];
+						break;
+					} else {
+						$difference = array_diff($att_query, $attributes);
+						$cdif = count($difference);
+						if($cdif < $count_difference){
+							$count_difference = $cdif;
+							$var_id = $avar['variation_id'];
+						}
+					}
+				}
+				$product = new WC_Product_Variation($var_id);
+				$price_html = $product->get_price_html();
+                if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
+				    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
+				    $price_html = $matches[1];
+				}
+				echo html_entity_decode($price_html);
+				exit;
+			}
+		/* If no children, just add to cart */	
+		} else {
+			$price_html = $product->get_price_html();
+            if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
+			    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
+			    $price_html = $matches[1];
+			}
+			echo html_entity_decode($price_html);
+			exit;
+		}
+    }
 	
 	/**
 	 * Create Bulk Order Form Shortcode
@@ -144,7 +422,8 @@ class WCBulkOrderForm_Variation_Template{
 		'add_rows' => isset($this->options['new_row_button']) ? $this->options['new_row_button'] : '',
 		'category' => '',
 		'exclude' => '',
-		'include' => ''
+		'include' => '',
+		'single_add_to_cart' => isset($this->options['single_add_to_cart']) ? $this->options['single_add_to_cart'] : ''
 		), $atts ) );
 		$i = 0;
 		$html = '';
@@ -191,6 +470,7 @@ HTML;
 					if ($price == 'true'){
 						$html .= '<th class="wcbulkorderprice">'.$price_label.'</th>';
 					}
+					$html .= '<th class="wcbulkorderaddtocart"></th>';
 				$html .= '</tr>';
 			while($i < $rows) {
 				++$i;
@@ -205,13 +485,16 @@ HTML;
 						<input type="text" name="wcbulkordervariation[]" class="wcbulkordervariation" />
 					</td>
 					<td class="wcbulkorder-quantity">
-						<input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" />
+						<input type="number" name="wcbulkorderquantity[]" class="wcbulkorderquantity" />
 					</td>
 HTML2;
 					if ($price == 'true'){
 					$html .= '<td class="wcbulkorderprice"></td>';
 					}
-					$html .='<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />';
+					$html .= '<input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" />';
+					if($single_add_to_cart == 'true'){
+						$html .= '<td class="wcbulkorderaddtocart"><input type="button" value="Add to Cart" data-link="" /><span class="add_to_cart_message"></span></td>';
+					}
 				$html .= '</tr>';
 			}
 		$html .= <<<HTML3
@@ -248,13 +531,14 @@ HTML6;
 						}
 					
 					$html .='</td>';
-					$html .='<td class="wcbulkorder-quantity"><input type="submit" value="'.__( 'Add To Cart' , 'wcbulkorderform' ).'" name="submit" class="add_to_cart_button single_add_to_cart_button" /></td>';
+					$html .='<td class="wcbulkorder-quantity"><input type="submit" value="'.__( 'Add To Cart' , 'wcbulkorderform' ).'" name="submit" class="add_to_cart_button single_add_to_cart_button bulkorderform_submit" /></td>';
 					$html .= <<<HTML5
 				</tr>
 			</tbody>
 		</table>
 		</form>
 HTML5;
+		$html .= '<div class="multi_add_to_cart_message woocommerce"></div>';
 		return $html;
 		
 	}
@@ -289,6 +573,11 @@ HTML5;
 								'terms'    	=> $category,
 							),
 						),
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 					
 					$products2 = array(
@@ -306,6 +595,11 @@ HTML5;
 								'terms'    	=> $category,
 							),
 						),
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if (($search_by == 1) || ($search_by == 4)){
@@ -313,11 +607,11 @@ HTML5;
 						'post_type'       	=> array ('product', 'product_variation'),
 						'post_status'       => array('publish'),
 						'posts_per_page'    => $max_items,
-						'meta_query' => array(
+						'meta_query'        => array(
 							array(
-							'key'       	=> '_sku',
-							'value' 		=> $_REQUEST['term'],
-							'compare' 		=> 'LIKE'
+							'key'	 		=> '_sku',
+							'value' 		=> '^'.$term,
+							'compare' 		=> 'REGEXP'
 							)
 						),
 						'fields'         	=> 'ids',
@@ -330,6 +624,11 @@ HTML5;
 								'terms'    	=> $category,
 							),
 						),
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if($search_by == 1) {
@@ -346,11 +645,11 @@ HTML5;
 						'post_type'       	=> array ('product', 'product_variation'),
 						'post_status'    	=> array('publish'),
 						'posts_per_page'    => $max_items,
-						'meta_query' => array(
+						'meta_query'        => array(
 							array(
-							'key'         	=> '_sku',
-							'value' 		=> $_REQUEST['term'],
-							'compare' 		=> 'LIKE'
+							'key'	 		=> '_sku',
+							'value' 		=> '^'.$term,
+							'compare' 		=> 'REGEXP'
 							)
 						),
 						'fields'            => 'ids',
@@ -363,6 +662,11 @@ HTML5;
 								'terms'    	=> $category,
 							),
 						),
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if (($search_by == 3) || ($search_by == 4)){
@@ -381,6 +685,11 @@ HTML5;
 								'terms'    	=> $category,
 							),
 						),
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if($search_by == 1) {
@@ -402,7 +711,12 @@ HTML5;
 						'posts_per_page'    => $max_items,
 						'fields'            => 'ids',
 						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'post__in'			=> $included_products,
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 					
 					$products2 = array(
@@ -412,7 +726,12 @@ HTML5;
 						'post_parent'       => $term,
 						'fields'            => 'ids',
 						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'post__in'			=> $included_products,
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if (($search_by == 1) || ($search_by == 4)){
@@ -420,16 +739,21 @@ HTML5;
 						'post_type'       	=> array ('product', 'product_variation'),
 						'post_status'       => array('publish'),
 						'posts_per_page'    => $max_items,
-						'meta_query' => array(
+						'meta_query'        => array(
 							array(
-							'key'       	=> '_sku',
-							'value' 		=> $_REQUEST['term'],
-							'compare' 		=> 'LIKE'
+							'key'	 		=> '_sku',
+							'value' 		=> '^'.$term,
+							'compare' 		=> 'REGEXP'
 							)
 						),
 						'fields'         	=> 'ids',
 						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'post__in'			=> $included_products,
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if($search_by == 1) {
@@ -446,16 +770,21 @@ HTML5;
 						'post_type'       	=> array ('product', 'product_variation'),
 						'post_status'    	=> array('publish'),
 						'posts_per_page'    => $max_items,
-						'meta_query' => array(
+						'meta_query'        => array(
 							array(
-							'key'         	=> '_sku',
-							'value' 		=> $_REQUEST['term'],
-							'compare' 		=> 'LIKE'
+							'key'	 		=> '_sku',
+							'value' 		=> '^'.$term,
+							'compare' 		=> 'REGEXP'
 							)
 						),
 						'fields'            => 'ids',
 						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'post__in'			=> $included_products,
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if (($search_by == 3) || ($search_by == 4)){
@@ -466,7 +795,12 @@ HTML5;
 						's'                 => $term,
 						'fields'            => 'ids',
 						'post__not_in'		=> $excluded_products,
-						'post__in'			=> $included_products
+						'post__in'			=> $included_products,
+						'suppress_filters' => false,
+						'no_found_rows'          => true,
+						'update_post_term_cache' => false,
+						'update_post_meta_cache' => false,
+						'cache_results'          => false
 					);
 				}
 				if($search_by == 1) {
@@ -482,24 +816,54 @@ HTML5;
 		
 		// JSON encode and echo
 		// Initialise suggestions array
-		
 		global $post, $woocommerce, $product;
 		$suggestions = '';
-		
-		foreach ($products as $prod){	
+		foreach ($products as $prod){
 			$post_type = get_post_type($prod);
 			if ( 'product' == $post_type ) {
-				$product = get_product($prod);
+				$attribute_html = '';
+				$variation_template_type = '1';
+				$product = wc_get_product($prod);
 				$product_has_variation = 'no';
 				if( $product->has_child() ) {
 					$product_has_variation = 'yes';
 				}
-				$id = $product->id;
+				$id = $prod;
 				$price = number_format((float)$product->get_price(), 2, '.', '');
 				$price_html = $product->get_price_html();
                 if(preg_match('/<ins>(.*?)<\/ins>/', $price_html)){ 
 				    preg_match('/<ins>(.*?)<\/ins>/', $price_html, $matches);
 				    $price_html = $matches[1];
+				}
+				/* Different Variation Setup for Attribute Option */
+				if($this->options['variation_display_format'] == '2'){
+					$variation_template_type = '2';
+					$att_list = array();
+					$add_to_cart = $product->add_to_cart_url();
+
+					/* Display the attribute selection */
+					$product_attributes = $product->get_attributes();
+	                $p_atts = array();
+	                foreach($product_attributes as $attribute){
+	                	$att_name = preg_replace('/pa_/','',$attribute['name']);
+	                	$att_name = preg_replace('/_/',' ',$att_name);
+	                	$attribute_html .= '<select id="attribute-selection-'.$attribute['name'].'" class="'.$attribute['name'].' attribute-selection" data-attribute="'.$attribute['name'].'">';
+	                		$attribute_html .= '<option selected="selected">Select '.$att_name.'</option>';
+	                		$terms = get_the_terms( $id, $attribute['name']);
+
+					      	if(!empty($terms)){
+						      	foreach ( $terms as $term ) {
+				      				$value = $term->name;
+				      				$name = $term->name;
+				      				$attribute_html .= '<option value="'.$value.'">'.$name.'</option>';
+						        }
+						    }
+	                	$attribute_html .= '</select>';
+	                	$p_atts[] = $attribute['name'];
+	                }
+	                if(empty($attribute_html)){
+	                	$attribute_html = apply_filters('wcbulkorder_no_variations_found','<span></span>');
+	                }
 				}
 				$price_html = strip_tags($price_html);
 				$price = $price_html;
@@ -507,7 +871,7 @@ HTML5;
 				$title = get_the_title($product->id);
 				$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
 				$img = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'thumbnail');
-        		$img = $img[0];
+	        	$img = $img[0];
 				if (!empty($img)) {
 					$img = $img;
 				} else {
@@ -559,6 +923,9 @@ HTML5;
 				$suggestion['id'] = $id;
 				$suggestion['imgsrc'] = $img;
 				$suggestion['has_variation'] = $product_has_variation;
+				$suggestion['attribute_html'] = $attribute_html;
+				$suggestion['add_to_cart_url'] = $add_to_cart;
+				$suggestion['variation_template'] = $variation_template_type;
 				if (!empty($variation_id)) {
 					$suggestion['variation_id'] = $variation_id;
 				}
@@ -583,17 +950,20 @@ HTML5;
 		$included_products = array();
 		$included_products = apply_filters('wc_bulk_order_included_products', $included_products);
 		if (empty($term)) die();
-		//echo $term;
 		$products1 = array(
-			'post_type'			=> array('product_variation'),
+			'post_type'			=> array ('product_variation'),
 			'post_status'       => array('publish'),
 			'post_parent'       => $term,
 			'fields'            => 'ids',
 			'post__not_in'		=> $excluded_products,
-			'post__in'			=> $included_products
+			'post__in'			=> $included_products,
+			'suppress_filters' => false,
+			'no_found_rows'          => true,
+			'update_post_term_cache' => false,
+			'update_post_meta_cache' => false,
+			'cache_results'          => false
 		);
 		$products = get_posts( $products1 );
-		//print_r($products);
 		
 		// JSON encode and echo
 		// Initialise suggestions array
@@ -601,12 +971,12 @@ HTML5;
 		global $post, $woocommerce, $product;
 		$suggestions = '';
 		
-		foreach ($products as $prod){	
+		foreach ($products as $prod){
 			$post_type = get_post_type($prod);
 						
 			if ( 'product_variation' == $post_type ) {
                     $product = new WC_Product_Variation($prod);
-                    $parent = get_product($prod);
+                    $parent = wc_get_product($prod);
                     $id = $product->variation_id;
                     $price = number_format((float)$product->price, 2, '.', '');
                     $price_html = $product->get_price_html();
@@ -629,8 +999,7 @@ HTML5;
 			      				$value = $term->name;
 			      			}
 				        }
-						$attr_name = $name;                       
-						$attr_value = $value;
+						$attr_name = $name;
 						$attr_value = str_replace('-', ' ', $value);
 						if($this->options['attribute_style'] === 'true'){
 							$title .= $attr_value.' ';
@@ -650,9 +1019,9 @@ HTML5;
 						$title = html_entity_decode($title, ENT_COMPAT, 'UTF-8');
                     }
     				$parent_image = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'thumbnail');
-        			$parent_image = $parent_image[0];
-        			$img = wp_get_attachment_image_src( get_post_thumbnail_id( $parent->id ), 'thumbnail');
-        			$img = $img[0];
+    				$parent_image = $parent_image[0];
+    				$img = wp_get_attachment_image_src( get_post_thumbnail_id( $parent->id ), 'thumbnail');
+    				$img = $img[0];
 					if (!empty($img)) {
 						$img = $img;
 					} elseif (!empty($parent_image)) {
@@ -702,6 +1071,7 @@ HTML5;
 				$suggestion['symbol'] = $symbol;
 				$suggestion['id'] = $id;
 				$suggestion['imgsrc'] = $img;
+				$suggestion['attributes'] = $product_attributes;
 				if (!empty($variation_id)) {
 					$suggestion['variation_id'] = $variation_id;
 				}
@@ -717,22 +1087,3 @@ HTML5;
 		exit;
 	}
 }
-/*
-class Register_Variation_Template {
-	public function __construct() {
-		register_activation_hook( __FILE__, array(&$this,'default_settings'));
-	}
-	public function default_settings() {
-		global $options;
-		$sections = get_option('wcbulkorderform_sections');
-		if(empty($sections['templates'])){
-			$sections['templates'] = array();
-		}
-		if(!in_array('variation',$sections['templates'])){
-			$sections['templates'][] = 'variation';
-		}
-		update_option('wcbulkorderform_sections',$sections);
-	}
-}
-$Register_Variation_Template = new Register_Variation_Template();
-*/

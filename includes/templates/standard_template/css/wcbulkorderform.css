@@ -55,3 +55,6 @@ tr.wcbulkorderformtr input{
 tr.wcbulkorderformtr td{
 	padding-right: 10px;
 }
+table.wcbulkorderformtable{
+	width:100%;
+}

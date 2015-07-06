@@ -3,8 +3,8 @@ Contributors: jprummer
 Donate link: https://www.wpovernight.com/
 Tags: woocommerce, quick order, bulk order, order form, bulk order form, quick order form
 Requires at least: 3.4
-Tested up to: 4.1
-Stable tag: 2.1.2
+Tested up to: 4.2.2
+Stable tag: 2.2
 
 Automatically add a bulk or quick order form to your WooCommerce site with a single shortcode.
 
@@ -53,6 +53,17 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 == Frequently Asked Questions ==
 
 == Changelog ==
+
+= 2.2 =
+
+* New: Select between Cart/Checkout to link users after adding to cart.
+* New: Added customer success/failure messages
+* Tweak: Improved sku search
+* Tweak: Replaced deprecated get_product function
+* Tweak: Multiple JS fixes
+* Tweak: Price fetching Improvements
+* Tweak: Cut search speed by over 50%
+* Tweak: Set bulk order form to 100% of container width
 
 = 2.1.2 =
 
@@ -172,6 +183,19 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 Initial Release
 
 == Upgrade Notice ==
+
+= 2.2 =
+
+** This is a big update. Please test thoroughly before using on your production site. **
+
+* New: Select between Cart/Checkout to link users after adding to cart.
+* New: Added customer success/failure messages
+* Tweak: Improved sku search
+* Tweak: Replaced deprecated get_product function
+* Tweak: Multiple JS fixes
+* Tweak: Price fetching Improvements
+* Tweak: Cut search speed by over 50%
+* Tweak: Set bulk order form to 100% of container width
 
 = 2.1.2 =
 

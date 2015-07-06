@@ -121,13 +121,13 @@ jQuery(document).ready(function ($){
 	$("input.wcbulkorderproduct").click(autocomplete());
 	$("button.wcbulkordernewrow").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="number" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
 		autocomplete();
 		return false;
 	});
 	$("button.wcbulkordernewrowprice").live('click', function() {
 		var $totalinput = $("tr:last").html();
-		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="text" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><td class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
+		$("tbody.wcbulkorderformtbody").append('<tr class="wcbulkorderformtr"><td class="wcbulkorder-title"><i class="bulkorder_spinner"></i><input type="text" name="wcbulkorderproduct[]" class="wcbulkorderproduct" /></td><td class="wcbulkorder-quantity"><input type="number" name="wcbulkorderquantity[]" class="wcbulkorderquantity" /></td><td class="wcbulkorderprice"></td><input type="hidden" name="wcbulkorderid[]" class="wcbulkorderid" value="" /></tr>');
 		autocomplete();
 		return false;
 	});
