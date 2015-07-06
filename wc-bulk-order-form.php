@@ -24,7 +24,6 @@ class WCBulkOrderForm {
 	 * Construct.
 	 */
 	public function __construct() {
-		register_activation_hook( __FILE__, array( $this, 'delete_old_options' ) );
 		$this->includes();
 		$mainoptions = get_option('wcbulkorderform');
 		$this->settings = new WCBulkOrderForm_Settings();
@@ -35,13 +34,6 @@ class WCBulkOrderForm {
 		register_activation_hook( __FILE__, array( $this, 'register_templates' ) );
 		register_activation_hook( __FILE__, array( $this, 'register_default_template' ) );
 		add_action( 'plugins_loaded', array( $this, 'languages' ), 0 ); // or use init?
-	}
-	
-	/**
-	 * Delete Options starting in version 2.2. Remove by version 2.3
-	 */
-	function delete_old_options(){
-		delete_option( 'wcbulkorderform' );
 	}
 
 	/**

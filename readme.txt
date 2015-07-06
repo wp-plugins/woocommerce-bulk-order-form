@@ -56,8 +56,8 @@ Once the plugin is activated navigate to Settings > WC Bulk Order Form. Select y
 
 = 2.2 =
 
-* New: Select between Cart/Checkout to link users after adding to cart.
-* New: Added customer success/failure messages
+* New: Select between Cart/Checkout to link users after adding to cart. (Pro Version Only)
+* New: Added customer success/failure messages (Pro Version Only)
 * Tweak: Improved sku search
 * Tweak: Replaced deprecated get_product function
 * Tweak: Multiple JS fixes
